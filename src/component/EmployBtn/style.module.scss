@@ -1,0 +1,30 @@
+.btn-add-remove{
+    display: flex;
+    justify-content: flex-end;
+
+    .btn{
+        font-size: 1.6em;
+        padding: 8px 12px;
+        min-width: 90px;
+        border: none;
+        display: flex;
+        align-items: center;
+        border-radius :8px;
+        img{
+            margin: 0 4px;
+        }
+        &:hover{
+            opacity: 0.8;
+        }
+    }
+    .btn-add{
+        background-color: rgb(237, 246, 255);
+
+    }
+    .btn-delete{
+        background-color: #FFEFEF;
+    }
+    .btn-add-employ{
+        margin: 0 10px;
+    }
+}

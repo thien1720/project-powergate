@@ -1,0 +1,56 @@
+.personal-infomation {
+  padding: 10px;
+
+  .style-datepick {
+    width: 100%;
+  }
+
+  .lay-out-e-info {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 30px;
+    .form-1,
+    .form-2 {
+      flex: 1;
+      padding: 20px;
+    }
+  }
+  .label-custom {
+    label {
+      &::before {
+        content: "" !important;
+      }
+      span {
+        color: var(--delete-btn);
+        font-size: 1.4rem;
+      }
+    }
+  }
+}
+
+.head-infomation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--back-input);
+  margin-bottom: 10px;
+  h1 {
+    font-size: 2rem;
+  }
+  span {
+    color: var(--delete-btn);
+  }
+}
+
+.label-custom {
+  label {
+    min-width: 180px;
+    &::before {
+      content: "" !important;
+    }
+    span {
+      color: var(--delete-btn);
+      font-size: 1.4rem;
+    }
+  }
+}

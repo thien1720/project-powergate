@@ -1,0 +1,76 @@
+.form-other {
+  padding: 20px;
+  max-width: 520px;
+  label{
+    min-width: 180px;
+  }
+}
+
+.box-upload {
+  margin: 20px;
+  border: 2px solid var(--back-input);
+  border-radius: 8px;
+  // padding: 10px;
+  .head-upload {
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    // justify-content: center;
+    // width: 500px;
+    .btn-upload-doc {
+      margin-top: 10px;
+      border: 1px dashed var(--gener-ral);
+      padding: 2px 8px;
+      background-color: var(--upload-img);
+      color: var(--gener-ral);
+      font-size: 1.6rem;
+      height: 100%;
+      border-radius: 8px;
+    }
+    .title-upload {
+      min-width: 180px;
+      p {
+        font-size: 1.6rem;
+        font-weight: 400;
+      }
+    }
+  }
+}
+
+.head-infomation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--back-input);
+  margin-bottom: 10px;
+  h1 {
+    font-size: 2rem;
+  }
+  span {
+    color: var(--delete-btn);
+  }
+}
+
+.label-custom {
+  label {
+    min-width: 180px;
+    &::before {
+      content: "" !important;
+    }
+    span {
+      color: var(--delete-btn);
+      font-size: 1.4rem;
+    }
+  }
+}
+
+.delete-file{
+  color: var(--delete-btn);
+  font-size: 2rem;
+  text-align: right;
+  // padding: 4px 8px;
+  border-radius: 8px;
+  background-color: var(--upload-img);
+  
+  cursor: pointer;
+}

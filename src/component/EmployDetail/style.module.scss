@@ -1,0 +1,31 @@
+.box-detail{
+    max-width: 520px;
+    padding: 20px;
+}
+
+.head-infomation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--back-input);
+  margin-bottom: 10px;
+  h1 {
+    font-size: 2rem;
+  }
+  span {
+    color: var(--delete-btn);
+  }
+}
+
+.label-custom {
+  label {
+    min-width: 180px;
+    &::before {
+      content: "" !important;
+    }
+    span {
+      color: var(--delete-btn);
+      font-size: 1.4rem;
+    }
+  }
+}

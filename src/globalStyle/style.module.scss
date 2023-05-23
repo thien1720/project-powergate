@@ -1,0 +1,75 @@
+@import "normalize.css";
+
+html {
+  font-size: 62.5%;
+}
+
+:root {
+  --form-login: #fbfcfd;
+  --back-input: #f1f3f5;
+  --nomal-color: #ffffff;
+  --gener-ral: #006adc;
+  --text-color: #11181c;
+  --map-page: #687076;
+  --delete-btn: #e5484d;
+  --add-btn: #000203;
+  --btn-color: #69D9C1;
+  --upload-img:#edf6ff;
+
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 0;
+}
+
+a {
+  color: var(--text-color);
+  text-decoration: none;
+  &:hover {
+    color: var(--text-color);
+  }
+}
+p {
+  margin-bottom: 0;
+}
+
+.ant-tabs-nav {
+  // định nghĩa CSS cho phần đầu tab
+  padding: 0 20px;
+  background-color: #f0f0f0;
+}
+
+.ant-tabs-nav-wrap {
+  // định nghĩa CSS cho container của các tab
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-tabs-tab-active {
+  background-color: var(--add-btn) !important;
+}
+.ant-tabs-tab {
+  // định nghĩa CSS cho mỗi tab
+  margin-right: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: var(--form-login);
+  border: none;
+  border-radius: 0;
+  transition: all 0.3s;
+  &.ant-tabs-tab-active {
+    // định nghĩa CSS cho tab được chọn
+    color: #1890ff;
+    border-bottom: 2px solid #1890ff;
+    background-color: transparent;
+  }
+
+  &:hover {
+    // định nghĩa CSS cho tab khi hover
+    color: #1890ff;
+    border-bottom: 2px solid #1890ff;
+    background-color: #f0f0f0;
+  }
+}

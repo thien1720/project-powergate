@@ -1,0 +1,32 @@
+.box-table {
+  margin-top: 20px;
+}
+.table-data {
+  // overflow-x: scroll;
+  width: 100%;
+  tr {
+    cursor: pointer;
+  }
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: rgb(233, 249, 238); // màu khi checkbox được chọn
+    //   border-color: #1890ff;
+  }
+
+  .ant-table-row {
+    cursor: pointer;
+    &:checked {
+      background-color: rgb(233, 249, 238);
+    }
+  }
+
+  .ant-table-tbody {
+    tr > td {
+      &:hover {
+        background-color: #f5f5f5;
+      }
+      &:checked {
+        background-color: rgb(233, 249, 238);
+      }
+    }
+  }
+}

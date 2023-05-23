@@ -1,0 +1,13 @@
+.content-page{
+    margin-top: 70px;
+    display: flex;
+    height: 100%;
+    // margin: 70px 30px 0;
+  background-color: #F8F9FA;
+  min-height: 100vh;
+
+    .main{
+        flex: 1;
+        overflow: hidden;
+    }
+}

@@ -1,0 +1,79 @@
+.contact-infomation {
+  .style-datepick {
+    width: 100%;
+  }
+
+  .box-confirm {
+    padding: 20px;
+  }
+  .form-1 {
+    margin: 10px;
+    max-width: 520px;
+  
+  }
+  
+  .box-contact {
+    padding: 10px;
+    border: 1px solid var(--back-input);
+    border-radius: 8px;
+    .title {
+      background-color: var(--form-login);
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      margin-bottom: 10px;
+    }
+  }
+  .btn-upload {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    .upload {
+      // padding: 10px;
+    }
+    .btn-upload-img {
+      border: 1px dashed var(--gener-ral);
+      border-radius: 8px;
+      padding: 14px;
+      background-color: var(--upload-img);
+      color: var(--add-btn);
+      font-size: 1.6rem;
+      height: 100%;
+
+      button {
+      }
+    }
+    .btn-color-add {
+      background-color: var(--btn-color);
+      padding: 14px 50px;
+      height: 100%;
+      font-size: 1.6rem;
+    }
+  }
+}
+
+.head-infomation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--back-input);
+  margin-bottom: 10px;
+  h1 {
+    font-size: 2rem;
+  }
+  span {
+    color: var(--delete-btn);
+  }
+}
+
+.label-custom {
+  label {
+    min-width: 180px;
+    &::before {
+      content: "" !important;
+    }
+    span {
+      color: var(--delete-btn);
+    }
+  }
+}
