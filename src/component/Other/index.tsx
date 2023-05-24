@@ -45,13 +45,20 @@ interface DataType {
 
 }
 
-function EmployOther({ benefits = [] }: any) {
+function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
     const [optionGrade, setOptionGrade] = useState<Benefit[]>([])
     const [optionBenefit, setOptionBenefit] = useState<any>([])
-    const [fileLists, setFileList] = useState<UploadFile[]>([])
-    var todayDate = new Date().toISOString().slice(0, 10);
+    let todayDate = new Date().toISOString().slice(0, 10);
+    const newLists = fileLists.map((item: any, index: number) => {        
+        if(item.document){
+            const indexName = Number(item.document.indexOf(item.employee_id)) + `${item.employee_id}`.length + 1
+            
+            return { ...item, index: index , name: item.document.slice(indexName)}
+        }else{
+            return { ...item, index: index }
+        }
+    })
 
-    console.log(fileLists)
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
     const columns: ColumnsType<object> = [
@@ -63,7 +70,7 @@ function EmployOther({ benefits = [] }: any) {
         },
         {
             title: 'Document Name',
-            dataIndex: 'name',
+            dataIndex: 'name' || "document",
             key: 'name',
             width: 500,
         },
@@ -108,25 +115,20 @@ function EmployOther({ benefits = [] }: any) {
     };
 
     const handleBeforeUpload = (file: RcFile, fileList: RcFile[]) => {
-        // Xử lý logic trước khi upload file
-        
         // Trả về false để ngăn chặn chức năng submit mặc định
         return false;
     };
     const handeleDeleteFile = (indexs: number) => {
-        // console.log(fileList)
-        const fileList = fileLists.filter((item, index) => index !== indexs);
 
+        const fileList = fileLists.filter((item :RcFile, index : number) => index !== indexs);
         setFileList(fileList);
-        // handeleChangeFile({fileList})
-    }
-    const onRemove = (file: any) => {
-        console.log(file)
+        const findId = fileLists.find((item :RcFile, index : number) => index == indexs);
+
+        setDeleteId([...deleteId, findId.id])
+
     }
 
     const handeleChangeFile = ({ fileList }: { fileList: any }) => {
-        console.log(fileList);
-        // if()
         setFileList([...fileList]);
     };
 
@@ -164,7 +166,7 @@ function EmployOther({ benefits = [] }: any) {
 
                     >
                         {optionGrade.map((option) => (
-                            <Option key={option.id} value={option.name}>
+                            <Option key={option.id} value={option.id}>
                                 {option.name}
                             </Option>
                         ))}
@@ -224,12 +226,9 @@ function EmployOther({ benefits = [] }: any) {
 
                     <div className={cx("location")}>
                         <Upload
-                            // name="upload"
                             fileList={fileLists}
                             className={cx("upload")}
                             onChange={handeleChangeFile}
-                            onRemove={onRemove}
-
                             showUploadList={false}
                             beforeUpload={handleBeforeUpload}
                             multiple={true}
@@ -248,7 +247,7 @@ function EmployOther({ benefits = [] }: any) {
                     <SimpleBar style={{ maxHeight: 500 }}>
 
                         <Table
-                            dataSource={fileLists.map((item: any, index: number) => ({ ...item, index: index }))}
+                            dataSource={newLists}
                             columns={columns}
                             pagination={false}
                             scroll={{ x: true }}

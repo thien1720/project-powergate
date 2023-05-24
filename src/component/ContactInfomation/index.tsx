@@ -1,5 +1,6 @@
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { Button, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
+import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import { UploadOutlined } from '@ant-design/icons';
 // import moment, { Moment } from 'moment';
 import renderCustomLabel from "../../common/customLabel"
@@ -7,24 +8,10 @@ import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
-function ContactInfomation() {
+function ContactInfomation({fileListContact , setFileListContact} : any) {
     let { id } = useParams()
-    console.log(id)
     const isEmployE = id ? true : false
-    const dataSource = [
-        {
-            key: '1',
-            name: 'Mike',
-            age: 32,
-            address: '10 Downing Street',
-        },
-        {
-            key: '2',
-            name: 'John',
-            age: 42,
-            address: '10 Downing Street',
-        },
-    ];
+
 
     const columns = [
         {
@@ -49,15 +36,31 @@ function ContactInfomation() {
         },
     ];
 
-    const [form] = Form.useForm();
-
-    const handleDateChange = (date: any | null, dateString: string) => {
-        // Xử lý logic khi ngày thay đổi
-        console.log(date); // date là đối tượng moment của ngày được chọn
-        console.log(dateString); // dateString là chuỗi biểu diễn ngày được chọn
-
-        form.setFieldsValue({ dateField: date }); // Set lại giá trị cho trường dateField trong Form
+    const handleBeforeUpload = (file: RcFile, fileList: RcFile[]) => {
+        // Trả về false để ngăn chặn chức năng submit mặc định
+        return false;
     };
+    const handeleDeleteFile = (indexs: number) => {
+
+        // const fileList = fileLists.filter((item :RcFile, index : number) => index !== indexs);
+        // setFileList(fileList);
+        // const findId = fileLists.find((item :RcFile, index : number) => index == indexs);
+
+        // setDeleteId([...deleteId, findId.id])
+
+    }
+
+    const handeleChangeFile = ({ fileList }: { fileList: any }) => {
+        // setFileList([...fileList]);
+    };
+
+    // const handleDateChange = (date: any | null, dateString: string) => {
+    //     // Xử lý logic khi ngày thay đổi
+    //     console.log(date); // date là đối tượng moment của ngày được chọn
+    //     console.log(dateString); // dateString là chuỗi biểu diễn ngày được chọn
+
+    //     form.setFieldsValue({ dateField: date }); // Set lại giá trị cho trường dateField trong Form
+    // };
 
 
     return (<div className={cx("contact-infomation")}>
@@ -84,7 +87,7 @@ function ContactInfomation() {
                     <DatePicker
                         format="YYYY-MM-DD"
                         className={cx("style-datepick")}
-                        
+
                         size="large"
                     />
                 </Form.Item>
@@ -99,7 +102,7 @@ function ContactInfomation() {
                     }]}
                 >
                     <Select
-                        disabled = {isEmployE}
+                        disabled={isEmployE}
                         size="large"
                         placeholder="Employee Type"
                     >
@@ -113,13 +116,14 @@ function ContactInfomation() {
             </div>
 
             <div className={cx("box-contact")}>
+                <div className={cx("title")}>
+                    <p>CONTRACT:</p>
+                    <span>Please upload pdf, png, xlsx, docx file format!</span>
+                </div>
                 <div className={cx("form-1")}>
-                    <div className={cx("title")}>
-                        <p>CONTRACT:</p>
-                    </div>
 
                     <Form.Item
-                       
+
                         className={cx("label-custom")}
                         label={renderCustomLabel("Date of Start")}
                         rules={[{ required: true, message: 'Please select date time' }]}
@@ -141,31 +145,32 @@ function ContactInfomation() {
                     >
                         <Input
                             size="large"
-                            // disabled
-                            defaultValue={"kdjfkdjf"}
+                            // defaultValue={"kdjfkdjf"}
                             type="text"
                             className={cx("style-input")}
-
                             placeholder="Contract Name" />
                     </Form.Item>
                 </div>
 
                 <div className={cx("btn-upload")}>
                     <Upload
-                        name="upload"
+                        // name="upload"
+                        fileList={fileListContact}
                         className={cx("upload")}
+                        onChange={handeleChangeFile}
+                        showUploadList={true}
+                        beforeUpload={handleBeforeUpload}
+                        maxCount={10}
                     >
-                        <button
+                        <p
                             className={cx("btn-upload-img")}
                         >
                             <UploadOutlined />
-                            Click to Upload</button>
+                            Click to Upload</p>
                     </Upload>
 
-
                     <Button
-                        type="primary"
-                        htmlType="submit"
+
                         className={cx("btn-color-add")}
                     >
                         Add
@@ -175,7 +180,7 @@ function ContactInfomation() {
             </div>
 
             <div className={cx("table-list-doc")}>
-                <Table dataSource={dataSource} columns={columns} pagination={false} />
+                <Table dataSource={[]} columns={columns} pagination={false} />
             </div>
         </div>
     </div>);

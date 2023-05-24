@@ -25,7 +25,6 @@ export interface EmInfo {
 function EmployInfomation({ detailE, onFinish, onFinishFailed }: EmInfo) {
     // const options: SelectProps['options'] = [];
     let { id } = useParams()
-    console.log(id)
     const isEmployE = id ? true : false
 
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();

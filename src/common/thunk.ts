@@ -9,8 +9,8 @@ export function fetchThunk(
   url: string,
   method: 'get' | 'post' | 'delete' | 'put' = 'get',
   body?: object | FormData,
-  auth = true,
   contentType?: string,
+  auth = true,
 ): ThunkAction<Promise<any>, AppState, null, Action<string>> {
   return async (dispatch, getState) => {
     console.log(url)
@@ -18,7 +18,7 @@ export function fetchThunk(
       // mode: 'no-cors',
       // credentials: 'include',
       method,
-      body: typeof body === 'object' ? JSON.stringify(body) : body,
+      body: body instanceof FormData ? body : JSON.stringify(body),
       headers:
         contentType !== 'multipart/form-data'
           ? {

@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs, Button, Form, Input } from 'antd';
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { FormInstance } from 'antd/lib/form';
 import { FiAlertOctagon } from "react-icons/fi";
 import { Action } from 'redux';
@@ -69,18 +70,36 @@ export interface DataForm {
 
 function EmployeeCreate() {
     const formRef = useRef<FormInstance>(null);
+    let navigate = useNavigate()
     let { id } = useParams()
     const isEmployE = id ? true : false
     const [form] = Form.useForm();
+
     const [isAdd, setIsAdd] = useState(true)
     const [isEmploy, setIsEmploy] = useState(false)
     const [isContact, setIsContact] = useState(false)
-
-    let navigate = useNavigate()
     const [optionBenefit, setOptionBenefit] = useState<any>([])
     const [optionPosition, setOptionPosition] = useState<any>([])
     const [optionDefaultSalary, setDefaultSalary] = useState<any>([])
     const [optionDepartment, setDepartment] = useState<any>([])
+    const [fileLists, setFileList] = useState<UploadFile[]>([])
+    const [deleteId, setDeleteId] = useState<[]>([])
+    const formData = new FormData();
+
+    formData.append('employee_id', String(id));
+    fileLists.forEach((file) => {
+        if (file.originFileObj) {
+            console.log(file)
+            formData.append('documents[]', file.originFileObj, file.name);
+        }
+    });
+
+    if (deleteId.length) {
+        deleteId.forEach((file) => {
+            formData.append('deleted_ids[]', file);
+        });
+    }
+
 
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
@@ -132,18 +151,20 @@ function EmployeeCreate() {
 
         async function handeAddChanges(values: any) {
             const json = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/`, "post", values))
-            console.log(json)
-            if (json.result) {
+            const uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
+                "post",
+                formData,
+                "multipart/form-data")
+            )
+            if (json.result && uploadOther.result) {
                 toastMessageSuccess("Update Success")
             } else {
-                toastMessageError(json.message)
+                toastMessageError(uploadOther.message)
             }
-            if (json.result) {
+            if (json.result && uploadOther.result) {
                 navigate("/employee")
-
             }
         }
-        console.log(values)
         handeAddChanges(values)
     };
 
@@ -153,6 +174,8 @@ function EmployeeCreate() {
     const handleTabChange = (activeKey: string) => {
         formRef.current?.validateFields().then(() => {
             console.log('Form is valid');
+
+            setIsAdd(false)
             // Do something when the form is valid
         }).catch((error: any) => {
             console.log('Form validation failed:', error);
@@ -166,7 +189,23 @@ function EmployeeCreate() {
             }
         });
     };
-
+    // const uploadAvatar = async () => {
+    //     const file = await generateAvatarUpload(previewCanvasRef.current, completedCrop);
+    //     if (file) {
+    //       const formData = new FormData();
+    //       formData.append('file', file, file.name);
+    //       const config = {
+    //         headers: {
+    //           'content-type': 'multipart/form-data',
+    //           Authorization: Cookies.get(ACCESS_TOKEN_KEY) || '',
+    //         },
+    //       };
+    //       const json = await axios.put(API_PATHS.userProfile, formData, config);
+    //       if (json.data && json.data.code === RESPONSE_STATUS_SUCCESS) {
+    //         dispatch(setUserInfo(json.data.data));
+    //       }
+    //     }
+    //   };
     useEffect(() => {
         const getEmployee = async () => {
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
@@ -238,8 +277,8 @@ function EmployeeCreate() {
                         tab={
                             <Button
                                 type="link"
-                                // className={"custom-tab-button" ,(
-                                //     isEmploy ? 'warming-btn' : '' )}
+                            // className={"custom-tab-button" ,(
+                            //     isEmploy ? 'warming-btn' : '' )}
                             >
                                 Employyee Infomation
                                 {
@@ -300,7 +339,6 @@ function EmployeeCreate() {
                         />
                     </TabPane>
 
-
                     <TabPane
                         tab={
                             <Button type="link" className="custom-tab-button">
@@ -309,7 +347,12 @@ function EmployeeCreate() {
                         }
 
                         key="5">
-                        <EmployOther />
+                        <EmployOther
+                             fileLists={fileLists}
+                             deleteId={deleteId}
+                             setDeleteId={setDeleteId}
+                             setFileList={setFileList}
+                        />
                     </TabPane>
                 </Tabs>
             </div>

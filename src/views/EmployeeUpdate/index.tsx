@@ -3,6 +3,7 @@ import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from "dayjs";
 import { Tabs, Button, Form, Input } from 'antd';
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -25,10 +26,6 @@ import styles from "./style.module.scss";
 import "./style.scss"
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
-// const layout = {
-//     labelCol: { span: 10 },
-//     wrapperCol: { span: 16 },
-// };
 
 export interface DataForm {
     id?: number,
@@ -121,6 +118,9 @@ function EmployeeCreateOrUpdate() {
     const [optionPosition, setOptionPosition] = useState<any>([])
     const [optionDefaultSalary, setDefaultSalary] = useState<any>([])
     const [optionDepartment, setDepartment] = useState<any>([])
+    const [fileLists, setFileList] = useState<UploadFile[]>([])
+    const [deleteId, setDeleteId] = useState<[]>([])
+    const [fileListContact, setFileListContact] = useState<UploadFile[]>([])
 
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
@@ -130,8 +130,23 @@ function EmployeeCreateOrUpdate() {
             day = ("0" + date.getDate()).slice(-2);
         return [date.getFullYear(), mnth, day].join("-");
     }
+
+    const formData = new FormData();
+    formData.append('employee_id', String(id));
+    fileLists.forEach((file) => {
+        if (file.originFileObj) {
+            console.log(file)
+            formData.append('documents[]', file.originFileObj, file.name);
+        }
+    });
+
+    if (deleteId.length) {
+        deleteId.forEach((file) => {
+            formData.append('deleted_ids[]', file);
+        });
+    }
+
     const onFinish = async (values: any) => {
-        console.log(values.dob)
         console.log(values.contract_start_date)
         values.dob = convert(values.dob)
         values.id = id
@@ -170,7 +185,7 @@ function EmployeeCreateOrUpdate() {
         } else {
             values.meal_allowance = values.meal_allowance
         }
-        if (values.contract_start_date == undefined) {
+        if (!values.contract_start_date) {
             values.contract_start_date = detailE.contract_start_date
         } else {
             values.contract_start_date = convert(values.contract_start_date)
@@ -182,19 +197,20 @@ function EmployeeCreateOrUpdate() {
         }
         async function handeAddChanges(values: any) {
             const json = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/${id}`, "put", values))
-            console.log(json)
-            if(json.result){
+            const uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
+                "post",
+                formData,
+                "multipart/form-data")
+            )
+            if (json.result && uploadOther.result) {
                 toastMessageSuccess("Update Success")
-            }else{
-                toastMessageError(json.message)
+            } else {
+                toastMessageError(uploadOther.message)
             }
-            if (json.result) {
+            if (json.result && uploadOther.result) {
                 navigate("/employee")
-                
             }
         }
-
-        console.log(values)
 
         handeAddChanges(values)
     };
@@ -217,6 +233,7 @@ function EmployeeCreateOrUpdate() {
             employee.data.type = Number(employee.data.type)
 
             setDetailE(employee.data)
+            setFileList(employee.data.documents)
             setDepartment(departMement.data)
             setDefaultSalary(defaultSalary.data)
             setOptionPosition(position.data)
@@ -224,7 +241,6 @@ function EmployeeCreateOrUpdate() {
             form.setFieldsValue(employee.data);
         }
         getEmployee()
-
 
     }, [dispatch, id])
 
@@ -242,7 +258,6 @@ function EmployeeCreateOrUpdate() {
         </div>
         <Form
             form={form}
-            // {...layout}
             layout="horizontal"
             className={cx("box-employ-info")}
             initialValues={detailE}
@@ -289,9 +304,12 @@ function EmployeeCreateOrUpdate() {
                                 Contact Infomation
                             </Button>
                         }
-
-                        key="2">
-                        <ContactInfomation />
+                        key="2"
+                    >
+                        <ContactInfomation
+                            fileListContact={fileListContact}
+                            setFileListContact = {setFileListContact}
+                        />
                     </TabPane>
 
                     <TabPane
@@ -317,7 +335,7 @@ function EmployeeCreateOrUpdate() {
 
                         key="3">
                         <EmployDetail
-                            departMement={optionDepartment} 
+                            departMement={optionDepartment}
                             position={optionPosition}
 
                         />
@@ -330,7 +348,12 @@ function EmployeeCreateOrUpdate() {
                         }
 
                         key="5">
-                        <EmployOther benefits={detailE.benefits} />
+                        <EmployOther
+                            fileLists={fileLists}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                            setFileList={setFileList}
+                        />
                     </TabPane>
                 </Tabs>
             </div>
