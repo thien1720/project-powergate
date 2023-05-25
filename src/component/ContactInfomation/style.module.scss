@@ -48,21 +48,28 @@
       // padding: 10px;
     }
     .btn-upload-img {
-      
+      border: 2px dotted var(--gener-ral);
       border-radius: 8px;
-      padding: 14px;
+      padding: 14px 30px;
       background-color: var(--upload-img);
       color: var(--add-btn);
       font-size: 1.6rem;
       height: 100%;
-
+      color: var(--gener-ral);
       
     }
     .btn-color-add {
-      background-color: var(--btn-color);
-      padding: 14px 50px;
+      border: 2px solid ;
+      min-width: 19.5rem;
+      text-align: center;
       height: 100%;
+      padding: 14px 50px;
+      border-radius: 8px;
       font-size: 1.6rem;
+      font-weight: 500;
+      color: var(--back-input);
+      background-color: var(--btn-color);
+      cursor: pointer;
     }
   }
 }
@@ -91,4 +98,16 @@
       color: var(--delete-btn);
     }
   }
+}
+
+
+.delete-file{
+  color: var(--delete-btn);
+  font-size: 2rem;
+  text-align: right;
+  // padding: 4px 8px;
+  border-radius: 8px;
+  background-color: var(--upload-img);
+  
+  cursor: pointer;
 }

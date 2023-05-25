@@ -8,6 +8,7 @@ import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import convert from "../../common/convertDate"
 import { Benefit } from "../../component/Other";
 import { EmployE } from '../../module/employee';
 import EmployInfomation from "../../component/EmployInfomation";
@@ -124,13 +125,6 @@ function EmployeeCreateOrUpdate() {
 
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
-    function convert(dateObj: Date) {
-        var date = new Date(dateObj),
-            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-            day = ("0" + date.getDate()).slice(-2);
-        return [date.getFullYear(), mnth, day].join("-");
-    }
-
     const formData = new FormData();
     formData.append('employee_id', String(id));
     fileLists.forEach((file) => {
@@ -147,7 +141,7 @@ function EmployeeCreateOrUpdate() {
     }
 
     const onFinish = async (values: any) => {
-        console.log(values.contract_start_date)
+        console.log(values)
         values.dob = convert(values.dob)
         values.id = id
         if (values.benefits) {
@@ -232,6 +226,7 @@ function EmployeeCreateOrUpdate() {
             employee.data.benefits = employee.data?.benefits.map((item: Benefit) => item.name)
             employee.data.type = Number(employee.data.type)
 
+            // console.log(dayjs(new Date(employee.data.dob)))
             setDetailE(employee.data)
             setFileList(employee.data.documents)
             setDepartment(departMement.data)

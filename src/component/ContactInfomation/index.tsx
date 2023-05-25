@@ -1,38 +1,64 @@
+import { useCallback, useState } from "react";
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
-import { Button, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
+import { Button,Space, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
+import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import { AiOutlineDelete } from "react-icons/ai";
+
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import { UploadOutlined } from '@ant-design/icons';
 // import moment, { Moment } from 'moment';
 import renderCustomLabel from "../../common/customLabel"
+import convert from "../../common/convertDate"
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
+export interface FormUpload {
+    contract_dates: any,
+    names: string,
+    fileList: UploadFile[], 
+}
 
-function ContactInfomation({fileListContact , setFileListContact} : any) {
+function ContactInfomation({ fileListContact, setFileListContact }: any) {
     let { id } = useParams()
     const isEmployE = id ? true : false
-
-
+    const initialFormUpload = {
+        contract_dates: "",
+        names: "",
+        fileList: [], 
+      };
+    const [formUpload, setFormUpload] = useState<FormUpload>(initialFormUpload)
+    const newLists = fileListContact.map((item: any, index: number) => {        
+            return { ...item, index: index }
+    })
     const columns = [
         {
             title: 'No',
-            dataIndex: 'name',
-            key: 'name',
+            dataIndex: 'index',
+            key: 'index',
         },
         {
             title: 'Contract Name',
-            dataIndex: 'age',
-            key: 'age',
+            dataIndex: 'names',
+            key: 'names',
         },
         {
             title: 'Sign Date',
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: 'contract_dates',
+            key: 'contract_dates',
         },
         {
             title: 'Action',
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: '',
+            key: 'fileList',
+            render: (_ : any, record : any, index : number) => (<>
+
+                <Space size="middle">
+
+                    <AiOutlineDelete onClick={() => handeleDeleteFile(index)} className={cx("delete-file")} />
+                </Space>
+
+            </>
+            ),
         },
     ];
 
@@ -41,9 +67,9 @@ function ContactInfomation({fileListContact , setFileListContact} : any) {
         return false;
     };
     const handeleDeleteFile = (indexs: number) => {
-
-        // const fileList = fileLists.filter((item :RcFile, index : number) => index !== indexs);
-        // setFileList(fileList);
+        console.log(indexs)
+        const fileList = fileListContact.filter((item :RcFile, index : number) => index !== indexs);
+        setFileListContact(fileList);
         // const findId = fileLists.find((item :RcFile, index : number) => index == indexs);
 
         // setDeleteId([...deleteId, findId.id])
@@ -51,16 +77,17 @@ function ContactInfomation({fileListContact , setFileListContact} : any) {
     }
 
     const handeleChangeFile = ({ fileList }: { fileList: any }) => {
-        // setFileList([...fileList]);
+        setFormUpload({ ...formUpload, fileList: [...fileList] });
     };
+    console.log(fileListContact)
+    const handleAddContact = useCallback(() => {
+        // const formatDate = convert(date)    
+        // Xử lý tìm kiếm
+        formUpload.contract_dates = convert(formUpload.contract_dates)
+        setFileListContact([...fileListContact, formUpload])
+        setFormUpload(initialFormUpload);
 
-    // const handleDateChange = (date: any | null, dateString: string) => {
-    //     // Xử lý logic khi ngày thay đổi
-    //     console.log(date); // date là đối tượng moment của ngày được chọn
-    //     console.log(dateString); // dateString là chuỗi biểu diễn ngày được chọn
-
-    //     form.setFieldsValue({ dateField: date }); // Set lại giá trị cho trường dateField trong Form
-    // };
+    }, [formUpload]);
 
 
     return (<div className={cx("contact-infomation")}>
@@ -120,22 +147,31 @@ function ContactInfomation({fileListContact , setFileListContact} : any) {
                     <p>CONTRACT:</p>
                     <span>Please upload pdf, png, xlsx, docx file format!</span>
                 </div>
+
                 <div className={cx("form-1")}>
 
                     <Form.Item
-
+                        
                         className={cx("label-custom")}
                         label={renderCustomLabel("Date of Start")}
-                        rules={[{ required: true, message: 'Please select date time' }]}
-
+                        rules={[{
+                            required: true,
+                            message: ' '
+                        }]}
                     >
                         <DatePicker
+                            value={formUpload.contract_dates}
+                            onChange={(date: any) => {
+                                // const newConTractDate = convert(date)
+                                setFormUpload({ ...formUpload, contract_dates: date });
+                            }}
                             size="large"
-
-                            className={cx("style-datepick")} />
+                            className={cx("style-datepick")}
+                        />
                     </Form.Item>
 
                     <Form.Item
+                        
                         className={cx("label-custom")}
                         label={renderCustomLabel("Contract Name")}
                         rules={[{
@@ -145,42 +181,46 @@ function ContactInfomation({fileListContact , setFileListContact} : any) {
                     >
                         <Input
                             size="large"
-                            // defaultValue={"kdjfkdjf"}
+                            value={formUpload.names}
+                            onChange={(event: any) => {
+                                setFormUpload({ ...formUpload, names: event.target.value });
+                            }}
                             type="text"
                             className={cx("style-input")}
                             placeholder="Contract Name" />
                     </Form.Item>
+
+
                 </div>
 
                 <div className={cx("btn-upload")}>
                     <Upload
                         // name="upload"
-                        fileList={fileListContact}
+                        fileList={formUpload.fileList}
                         className={cx("upload")}
                         onChange={handeleChangeFile}
-                        showUploadList={true}
                         beforeUpload={handleBeforeUpload}
-                        maxCount={10}
+                        maxCount={1}
                     >
-                        <p
+                        <Button
                             className={cx("btn-upload-img")}
                         >
                             <UploadOutlined />
-                            Click to Upload</p>
+                            Upload File</Button>
                     </Upload>
 
-                    <Button
-
+                    <p
+                        onClick={handleAddContact}
                         className={cx("btn-color-add")}
                     >
                         Add
-                    </Button>
+                    </p>
 
                 </div>
             </div>
 
             <div className={cx("table-list-doc")}>
-                <Table dataSource={[]} columns={columns} pagination={false} />
+                <Table dataSource={newLists} columns={columns} pagination={false} />
             </div>
         </div>
     </div>);
