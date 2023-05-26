@@ -6,7 +6,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import { UploadOutlined } from '@ant-design/icons';
-import renderCustomLabel from "../../common/customLabel"
+import renderCustomLabel from "../CustomLabel/customLabel"
 import convert from "../../common/convertDate"
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";

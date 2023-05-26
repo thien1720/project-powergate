@@ -2,7 +2,7 @@ import { Button, Select, Form, Input, DatePicker, Checkbox } from 'antd';
 import classNames from "classnames/bind"
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
 
-import renderCustomLabel from '../../common/customLabel';
+import renderCustomLabel from '../CustomLabel/customLabel';
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
@@ -30,7 +30,7 @@ function EmployDetail(
         <div className={cx("box-detail")}>
             <Form.Item
                 className={cx("label-custom")}
-                label={"Department"}
+                label={renderCustomLabel("Department")}
 
             >
                 <Select
@@ -43,7 +43,6 @@ function EmployDetail(
                             {option.name}
                         </Select.Option>
                     ))}
-
                 </Select>
 
             </Form.Item>
@@ -51,14 +50,14 @@ function EmployDetail(
 
             <Form.Item
                 className={cx("label-custom")}
-                label={"Position"}
+                label={renderCustomLabel("Position")}
             >
                 <Select
                     className={cx("item-select")}
                     placeholder="Employee Type"
                     size="large"
                 >
-                    <Select.Option value={null}>N/A</Select.Option>
+                    <Select.Option >N/A</Select.Option>
                     {position.map((option: any) => (
                         <Select.Option key={option.id} value={option.id}>
                             {option.name}

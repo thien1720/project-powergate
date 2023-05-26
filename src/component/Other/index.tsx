@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect } from "react"
 import { NavLink, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { Select, Form, Input, Upload, Table, Space } from 'antd';
@@ -9,6 +9,8 @@ import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { AiOutlineDelete } from "react-icons/ai";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+
+import renderCustomLabel from "../CustomLabel/customLabel";
 import { AppState } from '../../service/reducer';
 import { API_PATHS } from '../../config/api';
 import { fetchThunk } from '../../common/thunk';
@@ -45,8 +47,7 @@ interface DataType {
 
 }
 
-function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
-    const [optionGrade, setOptionGrade] = useState<Benefit[]>([])
+function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionGrade }: any) {
     const [optionBenefit, setOptionBenefit] = useState<any>([])
     let todayDate = new Date().toISOString().slice(0, 10);
     const newLists = fileLists.map((item: any, index: number) => {        
@@ -135,9 +136,8 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
 
     useEffect(() => {
         const getGrade = async () => {
-            const grades = await dispatch(fetchThunk(`${API_PATHS.grade}/grade`, "get"));
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
-            setOptionGrade(grades.data)
+          
             setOptionBenefit(benefit.data)
         }
         getGrade()
@@ -156,7 +156,8 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
             <div className={cx("form-other")}>
                 <Form.Item
                     name="grade_id"
-                    label="Grade"
+                    label={renderCustomLabel("Grade")}
+                
                 >
 
                     <Select
@@ -165,7 +166,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
                         onChange={onGenderChangeGrade}
 
                     >
-                        {optionGrade.map((option) => (
+                        {optionGrade.map((option: any) => (
                             <Option key={option.id} value={option.id}>
                                 {option.name}
                             </Option>
@@ -175,7 +176,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
 
                 <Form.Item
                     name="benefits"
-                    label="Benefit"
+                    label={renderCustomLabel("Benefit")}
                 >
                     <Select
                         size="large"
@@ -191,7 +192,9 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
                 </Form.Item>
 
                 <Form.Item
-                    label="Remark" >
+                    label={renderCustomLabel("Remark")}
+                    
+                    >
 
                     <TextArea
                         placeholder=" "
@@ -201,10 +204,10 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId }: any) {
 
                 <Form.Item
                     // name="HRM User Account"
-                    label="HRM User Account" >
+                    label={renderCustomLabel("HRM User Account")}
+                    >
                     <Select
                         size="large"
-
                         placeholder="HRM User Account"
                         // onChange={onGenderChange}
                         allowClear

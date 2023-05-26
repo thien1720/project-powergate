@@ -118,6 +118,7 @@ function EmployeeCreateOrUpdate() {
     const [detailE, setDetailE] = useState<DataForm>(initialState)
     const [optionBenefit, setOptionBenefit] = useState<any>([])
     const [optionPosition, setOptionPosition] = useState<any>([])
+    const [optionGrade, setOptionGrade] = useState<Benefit[]>([])
     const [optionDefaultSalary, setDefaultSalary] = useState<any>([])
     const [optionDepartment, setDepartment] = useState<any>([])
     const [fileLists, setFileList] = useState<UploadFile[]>([])
@@ -156,7 +157,9 @@ function EmployeeCreateOrUpdate() {
 
     const onFinish = async (values: any) => {
         console.log(values)
+
         values.dob = convert(values.dob)
+        values.contract_start_date = convert(values.contract_start_date)
         values.id = id
         if (values.benefits) {
             const newBenefits = values.benefits.map((bene: string) => {
@@ -165,7 +168,6 @@ function EmployeeCreateOrUpdate() {
                 })
                 return ids.id
             })
-            console.log(newBenefits)
             values.benefits = newBenefits
         }
         if (!values.basic_salary) {
@@ -193,16 +195,19 @@ function EmployeeCreateOrUpdate() {
         } else {
             values.meal_allowance = values.meal_allowance
         }
-        if (!values.contract_start_date) {
-            values.contract_start_date = detailE.contract_start_date
-        } else {
-            values.contract_start_date = convert(values.contract_start_date)
-        }
+        // if (!values.contract_start_date) {
+        //     // values.contract_start_date = detailE.contract_start_date
+        // } else {
+        // values.contract_start_date = convert(detailE.contract_start_date)
+        // }
         if (!values.type) {
             values.type = detailE.type
         } else {
             values.type = values.type
         }
+
+        console.log(values)
+
         async function handeAddChanges(values: any) {
             let uploadOther
             let uploadContact
@@ -224,12 +229,12 @@ function EmployeeCreateOrUpdate() {
                 )
             }
             console.log(uploadContact)
-            if (json.result ) {
+            if (json.result) {
                 toastMessageSuccess("Update Success")
             } else {
                 toastMessageError(uploadOther.message)
             }
-            if (json.result ) {
+            if (json.result) {
                 navigate("/employee")
             }
         }
@@ -243,8 +248,10 @@ function EmployeeCreateOrUpdate() {
 
     useEffect(() => {
         const getEmployee = async () => {
+
             const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/${id}`, "get"));
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
+            const grades = await dispatch(fetchThunk(`${API_PATHS.grade}/grade`, "get"));
             const position = await dispatch(fetchThunk(`${API_PATHS.grade}/position`, "get"));
             const defaultSalary = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-default-salary`, "get"));
             const departMement = await dispatch(fetchThunk(`${API_PATHS.grade}/department`, "get"));
@@ -261,11 +268,13 @@ function EmployeeCreateOrUpdate() {
             setDefaultSalary(defaultSalary.data)
             setOptionPosition(position.data)
             setOptionBenefit(benefit.data)
+            setOptionGrade(grades.data)
+
             form.setFieldsValue(employee.data);
         }
         getEmployee()
 
-    }, [dispatch, id])
+    }, [])
 
 
     return <div className={cx("employee-create-update")}>
@@ -318,7 +327,9 @@ function EmployeeCreateOrUpdate() {
                             </Button>
                         }
                     >
-                        <EmployInfomation detailE={detailE} onFinish={onFinish} onFinishFailed={onFinishFailed} />
+                        <EmployInfomation
+                        // detailE={detailE} 
+                        />
                     </TabPane>
 
                     <TabPane
@@ -376,6 +387,7 @@ function EmployeeCreateOrUpdate() {
                             deleteId={deleteId}
                             setDeleteId={setDeleteId}
                             setFileList={setFileList}
+                            optionGrade= {optionGrade}
                         />
                     </TabPane>
                 </Tabs>

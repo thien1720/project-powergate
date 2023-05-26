@@ -8,6 +8,7 @@ import { FiAlertOctagon } from "react-icons/fi";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import convert from "../../common/convertDate"
 import { Benefit } from "../../component/Other";
 import { EmployE } from '../../module/employee';
 import EmployInfomation from "../../component/EmployInfomation";
@@ -80,6 +81,7 @@ function EmployeeCreate() {
     const [isEmploy, setIsEmploy] = useState(false)
     const [isContact, setIsContact] = useState(false)
     const [optionBenefit, setOptionBenefit] = useState<any>([])
+    const [optionGrade, setOptionGrade] = useState<Benefit[]>([])
     const [optionPosition, setOptionPosition] = useState<any>([])
     const [optionDefaultSalary, setDefaultSalary] = useState<any>([])
     const [optionDepartment, setDepartment] = useState<any>([])
@@ -95,7 +97,6 @@ function EmployeeCreate() {
             formData.append('documents[]', file.originFileObj, file.name);
         }
     });
-
     if (deleteId.length) {
         deleteId.forEach((file) => {
             formData.append('deleted_ids[]', file);
@@ -116,14 +117,6 @@ function EmployeeCreate() {
         }
     })
 
-
-    function convert(dateObj: Date) {
-        var date = new Date(dateObj),
-            mnth = ("0" + (date.getMonth() + 1)).slice(-2),
-            day = ("0" + date.getDate()).slice(-2);
-        return [date.getFullYear(), mnth, day].join("-");
-    }
-
     const onFinish = async (values: any) => {
         values.dob = convert(values.dob)
         if (values.benefits) {
@@ -133,7 +126,6 @@ function EmployeeCreate() {
                 })
                 return ids.id
             })
-            console.log(newBenefits)
             values.benefits = newBenefits
         }
         if (!values.basic_salary) {
@@ -186,12 +178,12 @@ function EmployeeCreate() {
                 )
             }
             console.log(uploadContact)
-            if (json.result ) {
+            if (json.result) {
                 toastMessageSuccess("Update Success")
             } else {
                 toastMessageError(uploadOther.message)
             }
-            if (json.result ) {
+            if (json.result) {
                 navigate("/employee")
             }
         }
@@ -204,7 +196,8 @@ function EmployeeCreate() {
     const handleTabChange = (activeKey: string) => {
         formRef.current?.validateFields().then(() => {
             console.log('Form is valid');
-
+            setIsEmploy(false)
+            setIsContact(false)
             setIsAdd(false)
             // Do something when the form is valid
         }).catch((error: any) => {
@@ -215,6 +208,7 @@ function EmployeeCreate() {
                 setIsContact(true)
             }
             if (error.errorFields && activeKey == "2") {
+                // setIsContact(true)
                 setIsEmploy(true)
             }
         });
@@ -223,6 +217,7 @@ function EmployeeCreate() {
     useEffect(() => {
         const getEmployee = async () => {
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
+            const grades = await dispatch(fetchThunk(`${API_PATHS.grade}/grade`, "get"));
             const position = await dispatch(fetchThunk(`${API_PATHS.grade}/position`, "get"));
             const defaultSalary = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-default-salary`, "get"));
             const departMement = await dispatch(fetchThunk(`${API_PATHS.grade}/department`, "get"));
@@ -231,7 +226,7 @@ function EmployeeCreate() {
             setDefaultSalary(defaultSalary.data)
             setOptionPosition(position.data)
             setOptionBenefit(benefit.data)
-
+            setOptionGrade(grades.data)
             form.setFieldsValue(defaultSalary.data);
         }
         getEmployee()
@@ -281,43 +276,48 @@ function EmployeeCreate() {
                 <Tabs
                     defaultActiveKey="1"
                     type="card"
-                    // className={tabBarClassName}
-                    // tabBarClassName="custom-tab-bar"
                     onChange={handleTabChange}
                 >
                     <TabPane
-                        className={isEmploy ? "warning-tabpane" : ""}
+                        // style={{ background: isEmploy ? "red" : "" }}
+                        // tabBarStyle={{ background: isEmploy ? "red" : "#333" }}
+                        // className={isEmploy ? cx("warning-tabpane") : ""}
                         key="1"
+
                         tab={
-                            <Button
-                                type="link"
-                            // className={"custom-tab-button" ,(
-                            //     isEmploy ? 'warming-btn' : '' )}
+                            <div
+                                className={(isEmploy 
+                                    ? cx("ant-tabs-tab" ,"warning-tabpane") 
+                                    : "ant-tabs-tab")}
                             >
-                                Employyee Infomation
-                                {
-                                    isEmploy
-                                        ? <FiAlertOctagon className={cx("warning-infomation")} />
+                                <Button type="link"
+                                >
+                                    Employyee Infomation
+                                    {isEmploy
+                                        ? <FiAlertOctagon
+                                            className={cx("warning-infomation")}
+                                        />
                                         : <></>
-                                }
-                            </Button>
+                                    }
+                                </Button>
+                            </div>
                         }
                     >
-                        <EmployInfomation onFinish={onFinish} onFinishFailed={onFinishFailed} />
+                        <EmployInfomation />
                     </TabPane>
 
                     <TabPane
-                        // className={isEmploy ? "warning-tabpane" : ""}
                         tab={
                             <Button
                                 type="link"
                                 className={"custom-tab-button"}
                             >
                                 Contact Infomation
-                                {
-                                    isContact
-                                        ? <FiAlertOctagon className={cx("warning-infomation")} />
-                                        : <></>
+                                {isContact
+                                    ? <FiAlertOctagon
+                                        className={cx("warning-infomation")}
+                                    />
+                                    : <></>
                                 }
                             </Button>
                         }
@@ -348,7 +348,6 @@ function EmployeeCreate() {
                                 Salary & Wages
                             </Button>
                         }
-
                         key="4"
                     >
                         <SalaryWages
@@ -362,13 +361,14 @@ function EmployeeCreate() {
                                 Other
                             </Button>
                         }
-
-                        key="5">
+                        key="5"
+                    >
                         <EmployOther
                             fileLists={fileLists}
                             deleteId={deleteId}
                             setDeleteId={setDeleteId}
                             setFileList={setFileList}
+                            optionGrade={optionGrade}
                         />
                     </TabPane>
                 </Tabs>

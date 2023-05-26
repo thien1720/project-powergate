@@ -4,7 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 export function toastMessageSuccess(json: string) {
     toast.success(json, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -18,7 +18,7 @@ export function toastMessageError(json: string) {
 
     toast.error(json, {
         position: "top-right",
-        autoClose: 2000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,

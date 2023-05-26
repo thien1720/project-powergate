@@ -16,6 +16,7 @@ import { EmployE } from "../../module/employee";
 import { AppState } from '../../service/reducer';
 import { API_PATHS } from '../../config/api';
 import { fetchThunk } from '../../common/thunk';
+import Loading from "../../component/Loading"
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
@@ -29,12 +30,12 @@ interface userD {
 }
 
 function Employee() {
-    
+
     const [query, setQuery] = useState('');
     const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
-  
-             
+    const [loading, setLoading] = useState(false);
+
     const [selectedRows, setSelectedRows] = useState<EmployE[]>([]);
     const [page, setPage] = useState({})
     const userJSON: string = localStorage.getItem('auth') || "";
@@ -56,11 +57,11 @@ function Employee() {
         let search;
         if (event.target.value) {
             search = {
-              search: event.target.value
+                search: event.target.value
             }
-          } else {
+        } else {
             search = undefined;
-          }
+        }
         setQuery(event.target.value);
         setSearchParams(search, { replace: true });
 
@@ -68,10 +69,11 @@ function Employee() {
     };
 
     const getEmployee = async () => {
+        setLoading(true)
         const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
         dispatch(addEmployeeDocment(employee.data.data))
         setPage(employee.data)
-        console.log(employee.data)
+        setLoading(false)
 
     }
 
@@ -97,7 +99,9 @@ function Employee() {
         <div className={cx("show-list")}>
             <EmployBtn deleteEm={selectedRowKeys} />
 
-            <SimpleBar style={{ maxHeight: 500 }}>
+            <SimpleBar
+                style={{ maxHeight: 500 }}
+            >
 
                 <div className={cx("show-list-employee")}>
                     <TableData
@@ -105,10 +109,15 @@ function Employee() {
                         setSelectedRowKeys={setSelectedRowKeys}
                         selectedRows={selectedRows}
                         setSelectedRows={setSelectedRows}
+                        loading={loading}
                     />
                 </div>
             </SimpleBar>
-            <PaginationPage pagiNation={page} setPage={setPage} />
+            <PaginationPage
+                pagiNation={page}
+                setPage={setPage}
+                setLoading={setLoading}
+            />
         </div>
     </div>
 }

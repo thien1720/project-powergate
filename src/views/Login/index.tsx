@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate , useSearchParams } from 'react-router-dom';
 import { Button, Select, Form, Input } from 'antd';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -21,6 +21,8 @@ function Login() {
     const userD = useSelector((state: any) => state.authReduce)
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
     const [, forceUpdate] = useState({});
+    const [searchParams] = useSearchParams({'auth/sign-in': ''});
+
     let navigate = useNavigate()
 
     useEffect(() => {
@@ -35,7 +37,6 @@ function Login() {
             } else {
                 toastMessageError(json.message)
             }
-            console.log(json)
             if (json.result) {
                 dispatch(setAuthorization(json.data.token))
                 Cookies.set(ACCESS_TOKEN_KEY, `Bearer ${json.data.token}`, { expires: values ? 7 : undefined });

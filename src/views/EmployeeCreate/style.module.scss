@@ -36,16 +36,12 @@
     border-radius: 8px;
     padding: 20px 0;
     margin-top: 30px;
-    // .custom-tab-button {
-      
       .warning-infomation {
         position: absolute;
         color: var(--upload-img);
         font-size: 2rem;
         right: -8px;
-        // margin: 0 5px;
       }
-    // }
   }
 
   .btn-login {
@@ -54,6 +50,7 @@
   }
 }
 
-// .warning-tabpane{
-//   background-color: red !important;
-// }
+.warning-tabpane{
+  // width: 100%;
+  background-color: red !important;
+}
