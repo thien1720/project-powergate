@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select, Form, Input } from 'antd';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { API_PATHS } from '../../config/api';
+import { fetchThunk } from '../../common/thunk';
+import { AppState } from '../../service/reducer';
+import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
@@ -9,11 +17,27 @@ const cx = classNames.bind(styles);
 function ForgotPass() {
     const [form] = Form.useForm()
     const [, forceUpdate] = useState({});
+    let navigate = useNavigate()
+    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
+
     useEffect(() => {
         forceUpdate({});
     }, [])
     const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+        async function handleFogotPass() {
+            console.log('Received values of form: ', values);
+            const forgotPass = await dispatch(fetchThunk(`${API_PATHS.grade}`, "post" , values));
+            console.log(forgotPass);
+            if(forgotPass.result) {
+                toastMessageSuccess(forgotPass.message);
+                navigate("/")
+            }else{
+                toastMessageError(forgotPass.message);
+
+            }
+        }
+
+        handleFogotPass()
     };
 
     return (
@@ -26,11 +50,8 @@ function ForgotPass() {
 
 
             <Form
-
-                name="normal_login"
                 layout="vertical"
                 className={cx("login-form")}
-                // initialValues={{ remember: true }}
                 onFinish={onFinish}
             >
                 <Form.Item

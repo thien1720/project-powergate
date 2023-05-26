@@ -1,6 +1,13 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import {  Link, useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Space, Modal } from 'antd';
+import { Action } from 'redux';
+import { ThunkDispatch } from 'redux-thunk';
+
+import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
+import { setAuthorization, setUserInfo, logout } from "../../service/redux/auth.login"
+import { AppState } from '../../service/reducer';
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
@@ -12,6 +19,8 @@ function Header() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userJSON: string = localStorage.getItem('auth') || "";
     const ifUser = JSON.parse(userJSON);
+    let navigate = useNavigate()
+    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -19,6 +28,11 @@ function Header() {
 
     const handleOk = () => {
         // setIsModalOpen(false);
+        dispatch(logout())
+        localStorage.removeItem("auth")
+        navigate("/")
+        toastMessageSuccess("LogOut-Succes.")
+
     };
 
     const handleCancel = () => {
@@ -26,26 +40,28 @@ function Header() {
     };
 
     return (<div className={cx("header-employe")}>
-        {/* model */}
-
         <Modal
             title="Do you wish to sign out?"
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
-            width={300}
+            width={400}
+            
+            className={cx("module-logout")}
             footer={[
-                <Button size="large" key="back" onClick={handleCancel}>
+                <Button className={cx("custom-btn")} size="large" key="back" onClick={handleCancel}>
                     NO
                 </Button>,
-                <Button size="large" key="submit" type="primary" onClick={handleOk}>
+                <Button className={cx("custom-btn")} size="large" key="submit" type="primary" onClick={handleOk}>
                     YES
                 </Button>
 
             ]}
         >
 
-
+            <div className={cx("content-modal")}>
+                {/* sjkdfjdkf */}
+            </div>
         </Modal>
 
         <div className={cx("logo-employe")}>

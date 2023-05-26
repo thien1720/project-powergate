@@ -13,7 +13,6 @@ export function fetchThunk(
   auth = true,
 ): ThunkAction<Promise<any>, AppState, null, Action<string>> {
   return async (dispatch, getState) => {
-    console.log(url)
     const res = await fetch(url, {  
       // mode: 'no-cors',
       // credentials: 'include',

@@ -5,6 +5,8 @@ import EmployeeCreate from "../views/EmployeeCreate"
 import Login from "../views/Login"
 import Employee from "../views/Employee"
 import ForgotPass from "../views/ForgotPass"        
+import NotFound from "../views/NotFound"
+
 const RouterPage = [
     {
         path: "/",
@@ -28,6 +30,12 @@ const RouterPage = [
         path : "/employee/create-or-update/:id",
         component: EmployeeUpdate
     },
+
+    {   
+        path: "*",
+        component: NotFound ,
+        layout: null
+    }
 
 ]
 

@@ -71,6 +71,8 @@ function Employee() {
         const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
         dispatch(addEmployeeDocment(employee.data.data))
         setPage(employee.data)
+        console.log(employee.data)
+
     }
 
     useEffect(() => {

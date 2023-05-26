@@ -113,6 +113,7 @@ function EmployeeCreateOrUpdate() {
     const [form] = Form.useForm();
     let { id } = useParams()
     let navigate = useNavigate()
+    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
     const [detailE, setDetailE] = useState<DataForm>(initialState)
     const [optionBenefit, setOptionBenefit] = useState<any>([])
@@ -121,10 +122,9 @@ function EmployeeCreateOrUpdate() {
     const [optionDepartment, setDepartment] = useState<any>([])
     const [fileLists, setFileList] = useState<UploadFile[]>([])
     const [deleteId, setDeleteId] = useState<[]>([])
-    const [fileListContact, setFileListContact] = useState<UploadFile[]>([])
+    const [fileListContact, setFileListContact] = useState<any>([])
 
-    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
-
+    // form orther
     const formData = new FormData();
     formData.append('employee_id', String(id));
     fileLists.forEach((file) => {
@@ -139,6 +139,20 @@ function EmployeeCreateOrUpdate() {
             formData.append('deleted_ids[]', file);
         });
     }
+
+    // form contact info
+    const formContactInfo = new FormData();
+    formContactInfo.append('employee_id', String(id));
+    fileListContact.forEach((contact: any) => {
+
+        if (contact.fileList) {
+            formContactInfo.append("documents[]", contact.fileList[0].originFileObj);
+            formContactInfo.append("names[]", contact.name);
+            formContactInfo.append("contract_dates[]", contact.contract_date);
+            formContactInfo.append("deleted_contracts[]", contact.deletedContracts);
+
+        }
+    })
 
     const onFinish = async (values: any) => {
         console.log(values)
@@ -190,18 +204,32 @@ function EmployeeCreateOrUpdate() {
             values.type = values.type
         }
         async function handeAddChanges(values: any) {
+            let uploadOther
+            let uploadContact
             const json = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/${id}`, "put", values))
-            const uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
-                "post",
-                formData,
-                "multipart/form-data")
-            )
-            if (json.result && uploadOther.result) {
+            if (formData.get("documents[]") || formData.get("deleted_ids[]")) {
+
+                uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
+                    "post",
+                    formData,
+                    "multipart/form-data")
+                )
+            }
+            if (formContactInfo.get("documents[]") || formContactInfo.get("deleted_contracts[]")) {
+
+                uploadContact = await dispatch(fetchThunk(`${API_PATHS.grade}/contract/save-multiple`,
+                    "post",
+                    formContactInfo,
+                    "multipart/form-data")
+                )
+            }
+            console.log(uploadContact)
+            if (json.result ) {
                 toastMessageSuccess("Update Success")
             } else {
                 toastMessageError(uploadOther.message)
             }
-            if (json.result && uploadOther.result) {
+            if (json.result ) {
                 navigate("/employee")
             }
         }
@@ -226,9 +254,9 @@ function EmployeeCreateOrUpdate() {
             employee.data.benefits = employee.data?.benefits.map((item: Benefit) => item.name)
             employee.data.type = Number(employee.data.type)
 
-            // console.log(dayjs(new Date(employee.data.dob)))
             setDetailE(employee.data)
             setFileList(employee.data.documents)
+            setFileListContact(employee.data.contracts)
             setDepartment(departMement.data)
             setDefaultSalary(defaultSalary.data)
             setOptionPosition(position.data)
@@ -303,7 +331,7 @@ function EmployeeCreateOrUpdate() {
                     >
                         <ContactInfomation
                             fileListContact={fileListContact}
-                            setFileListContact = {setFileListContact}
+                            setFileListContact={setFileListContact}
                         />
                     </TabPane>
 

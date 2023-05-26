@@ -6,25 +6,26 @@ import { AiOutlineDelete } from "react-icons/ai";
 
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import { UploadOutlined } from '@ant-design/icons';
-// import moment, { Moment } from 'moment';
 import renderCustomLabel from "../../common/customLabel"
 import convert from "../../common/convertDate"
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 export interface FormUpload {
-    contract_dates: any,
-    names: string,
+    contract_date: any,
+    name: string,
     fileList: UploadFile[], 
+    deletedContracts ?: number
 }
 
 function ContactInfomation({ fileListContact, setFileListContact }: any) {
     let { id } = useParams()
     const isEmployE = id ? true : false
     const initialFormUpload = {
-        contract_dates: "",
-        names: "",
+        contract_date: "",
+        name: "",
         fileList: [], 
+        deletedContracts : undefined
       };
     const [formUpload, setFormUpload] = useState<FormUpload>(initialFormUpload)
     const newLists = fileListContact.map((item: any, index: number) => {        
@@ -38,17 +39,17 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
         },
         {
             title: 'Contract Name',
-            dataIndex: 'names',
-            key: 'names',
+            dataIndex: 'name',
+            key: 'name',
         },
         {
             title: 'Sign Date',
-            dataIndex: 'contract_dates',
-            key: 'contract_dates',
+            dataIndex: 'contract_date',
+            key: 'contract_date',
         },
         {
             title: 'Action',
-            dataIndex: '',
+            // dataIndex: '',
             key: 'fileList',
             render: (_ : any, record : any, index : number) => (<>
 
@@ -67,23 +68,18 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
         return false;
     };
     const handeleDeleteFile = (indexs: number) => {
-        console.log(indexs)
         const fileList = fileListContact.filter((item :RcFile, index : number) => index !== indexs);
         setFileListContact(fileList);
-        // const findId = fileLists.find((item :RcFile, index : number) => index == indexs);
-
-        // setDeleteId([...deleteId, findId.id])
-
+        const findId = fileListContact.find((item :RcFile, index : number) => index == indexs);
+        setFormUpload({...formUpload, deletedContracts : findId.id})
+        
     }
 
-    const handeleChangeFile = ({ fileList }: { fileList: any }) => {
+    const handeleChangeFile = ({ fileList }: { fileList: UploadFile[] }) => {
         setFormUpload({ ...formUpload, fileList: [...fileList] });
     };
-    console.log(fileListContact)
-    const handleAddContact = useCallback(() => {
-        // const formatDate = convert(date)    
-        // Xử lý tìm kiếm
-        formUpload.contract_dates = convert(formUpload.contract_dates)
+    const handleAddContact = useCallback(() => {   
+        formUpload.contract_date = convert(formUpload.contract_date)
         setFileListContact([...fileListContact, formUpload])
         setFormUpload(initialFormUpload);
 
@@ -160,10 +156,10 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                         }]}
                     >
                         <DatePicker
-                            value={formUpload.contract_dates}
+                            value={formUpload.contract_date}
                             onChange={(date: any) => {
                                 // const newConTractDate = convert(date)
-                                setFormUpload({ ...formUpload, contract_dates: date });
+                                setFormUpload({ ...formUpload, contract_date: date });
                             }}
                             size="large"
                             className={cx("style-datepick")}
@@ -181,9 +177,9 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                     >
                         <Input
                             size="large"
-                            value={formUpload.names}
+                            value={formUpload.name}
                             onChange={(event: any) => {
-                                setFormUpload({ ...formUpload, names: event.target.value });
+                                setFormUpload({ ...formUpload, name: event.target.value });
                             }}
                             type="text"
                             className={cx("style-input")}

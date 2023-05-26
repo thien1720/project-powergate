@@ -15,7 +15,7 @@ function App() {
     <Router>
       <div className="App">
         <Routes>
-          {RouterPage.map((router : {path: string , component: any , layout ?: any , naviteams?: { pathnav: string , navComponent: any}}, index : number) => {
+          {RouterPage.map((router : {path?: string , component: any , layout ?: any , naviteams?: { pathnav: string , navComponent: any}}, index : number) => {
 
             const Pages = router.component
             let PageNav

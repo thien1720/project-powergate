@@ -3,8 +3,9 @@
   flex: 1;
   padding: 30px;
   .map-page {
+    font-size: 1.4rem;
     a {
-      font-size: 1.6rem;
+      font-size: 1.4rem;
       color: var(--map-page);
     }
     span {
@@ -21,6 +22,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    h1{
+      font-size: 2.4rem;
+    }
     .search-employ {
       position: relative;
       display: flex;

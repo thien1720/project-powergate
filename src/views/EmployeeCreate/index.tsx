@@ -74,6 +74,7 @@ function EmployeeCreate() {
     let { id } = useParams()
     const isEmployE = id ? true : false
     const [form] = Form.useForm();
+    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
     const [isAdd, setIsAdd] = useState(true)
     const [isEmploy, setIsEmploy] = useState(false)
@@ -82,11 +83,12 @@ function EmployeeCreate() {
     const [optionPosition, setOptionPosition] = useState<any>([])
     const [optionDefaultSalary, setDefaultSalary] = useState<any>([])
     const [optionDepartment, setDepartment] = useState<any>([])
-    const [fileLists, setFileList] = useState<UploadFile[]>([])
     const [deleteId, setDeleteId] = useState<[]>([])
-    const formData = new FormData();
+    const [fileLists, setFileList] = useState<UploadFile[]>([])
+    const [fileListContact, setFileListContact] = useState<any>([])
 
-    formData.append('employee_id', String(id));
+    const formData = new FormData();
+    // formData.append('employee_id', String(id));
     fileLists.forEach((file) => {
         if (file.originFileObj) {
             console.log(file)
@@ -100,8 +102,20 @@ function EmployeeCreate() {
         });
     }
 
+    // form contact info
+    const formContactInfo = new FormData();
+    // formContactInfo.append('employee_id', String(id));
+    fileListContact.forEach((contact: any) => {
 
-    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
+        if (contact.fileList) {
+            formContactInfo.append("documents[]", contact.fileList[0].originFileObj);
+            formContactInfo.append("names[]", contact.name);
+            formContactInfo.append("contract_dates[]", contact.contract_date);
+            formContactInfo.append("deleted_contracts[]", contact.deletedContracts);
+
+        }
+    })
+
 
     function convert(dateObj: Date) {
         var date = new Date(dateObj),
@@ -109,6 +123,7 @@ function EmployeeCreate() {
             day = ("0" + date.getDate()).slice(-2);
         return [date.getFullYear(), mnth, day].join("-");
     }
+
     const onFinish = async (values: any) => {
         values.dob = convert(values.dob)
         if (values.benefits) {
@@ -150,18 +165,33 @@ function EmployeeCreate() {
         values.contract_start_date = convert(values.contract_start_date)
 
         async function handeAddChanges(values: any) {
+            let uploadOther
+            let uploadContact
             const json = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/`, "post", values))
-            const uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
-                "post",
-                formData,
-                "multipart/form-data")
-            )
-            if (json.result && uploadOther.result) {
+            console.log(json)
+            if (formData.get("documents[]") || formData.get("deleted_ids[]")) {
+                formData.append('employee_id', String(json.data.id));
+                uploadOther = await dispatch(fetchThunk(`${API_PATHS.grade}/employee-document/upload`,
+                    "post",
+                    formData,
+                    "multipart/form-data")
+                )
+            }
+            if (formContactInfo.get("documents[]") || formContactInfo.get("deleted_contracts[]")) {
+                formContactInfo.append('employee_id', String(json.data.id));
+                uploadContact = await dispatch(fetchThunk(`${API_PATHS.grade}/contract/save-multiple`,
+                    "post",
+                    formContactInfo,
+                    "multipart/form-data")
+                )
+            }
+            console.log(uploadContact)
+            if (json.result ) {
                 toastMessageSuccess("Update Success")
             } else {
                 toastMessageError(uploadOther.message)
             }
-            if (json.result && uploadOther.result) {
+            if (json.result ) {
                 navigate("/employee")
             }
         }
@@ -189,23 +219,7 @@ function EmployeeCreate() {
             }
         });
     };
-    // const uploadAvatar = async () => {
-    //     const file = await generateAvatarUpload(previewCanvasRef.current, completedCrop);
-    //     if (file) {
-    //       const formData = new FormData();
-    //       formData.append('file', file, file.name);
-    //       const config = {
-    //         headers: {
-    //           'content-type': 'multipart/form-data',
-    //           Authorization: Cookies.get(ACCESS_TOKEN_KEY) || '',
-    //         },
-    //       };
-    //       const json = await axios.put(API_PATHS.userProfile, formData, config);
-    //       if (json.data && json.data.code === RESPONSE_STATUS_SUCCESS) {
-    //         dispatch(setUserInfo(json.data.data));
-    //       }
-    //     }
-    //   };
+
     useEffect(() => {
         const getEmployee = async () => {
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
@@ -309,7 +323,10 @@ function EmployeeCreate() {
                         }
 
                         key="2">
-                        <ContactInfomation />
+                        <ContactInfomation
+                            fileListContact={fileListContact}
+                            setFileListContact={setFileListContact}
+                        />
                     </TabPane>
                     <TabPane
                         tab={
@@ -348,10 +365,10 @@ function EmployeeCreate() {
 
                         key="5">
                         <EmployOther
-                             fileLists={fileLists}
-                             deleteId={deleteId}
-                             setDeleteId={setDeleteId}
-                             setFileList={setFileList}
+                            fileLists={fileLists}
+                            deleteId={deleteId}
+                            setDeleteId={setDeleteId}
+                            setFileList={setFileList}
                         />
                     </TabPane>
                 </Tabs>

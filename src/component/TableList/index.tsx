@@ -1,17 +1,13 @@
 import { useState, useEffect, Key } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { Divider, Radio, Table } from 'antd';
+import { Table , Space } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 import { addEmployeeDocment } from "../../service/redux/employee.document"
 import { EmployE } from "../../module/employee";
 import { AppState } from '../../service/reducer';
-import { API_PATHS } from '../../config/api';
-import { fetchThunk } from '../../common/thunk';
-import { Action } from 'redux';
-import { ThunkDispatch } from 'redux-thunk';
-import { Rowid } from "../EmployBtn"
+ 
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
@@ -30,20 +26,24 @@ const columns: ColumnsType<EmployE> = [
     {
         title: 'NIK',
         dataIndex: 'staff_id',
-        width: 500,
+        width: 100,
         // render: (text: string) => <a>{text}</a>,
     },
     {
         title: 'Name',
         dataIndex: 'name',
-        width: 500,
+        width: 50,
 
     },
     {
         title: 'Gender',
         dataIndex: 'age',
-        // render: (text: string) => <a>{text}</a>,
-        width: 500,
+        render: (_, record, index) => (<>
+               {record.gender == 0 && "Female"}
+               {record.gender == 1 && "Male"}
+
+        </>),
+        width: 300
 
     },
     {
@@ -57,127 +57,127 @@ const columns: ColumnsType<EmployE> = [
         title: 'Bank Account No.',
         dataIndex: 'bank_account_no',
         // render: (text: string) => <a>{text}</a>,
-        width: 500,
+        width: 300
 
     },
     {
         title: 'Name',
         dataIndex: 'family_card_number',
-        width: 500,
+        width: 100
 
     },
     {
         title: 'Marriage Status',
         dataIndex: 'marriage_id',
-        width: 500,
+        width: 30
 
     },
     {
         title: 'Mother Name',
         dataIndex: 'mother_name',
-        width: 500,
+        width: 30,
 
     },
     {
         title: 'Home Address_1',
         dataIndex: 'home_address_1',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Home Address_2',
         dataIndex: 'home_address_2',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Place of birth',
         dataIndex: 'pob',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Date of birth',
         dataIndex: 'dob',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'National Card ID No.',
         dataIndex: 'nc_id',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Date Start',
         dataIndex: 'contract_start_date',
-        width: 500,
+        width: 200,
 
     },
     {
         title: 'First Contract',
         dataIndex: '',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Second Contract',
         dataIndex: '',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'End Contract',
         dataIndex: '',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Department',
         dataIndex: 'department_id',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Employee Type',
         dataIndex: '',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Salary Rp.',
         dataIndex: '',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Position',
         dataIndex: 'position_id',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'O/T Paid',
         dataIndex: 'home_address_1',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Meal paid',
         dataIndex: 'meal_allowance_paid',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Meal Rp.',
         dataIndex: 'meal_allowance',
-        width: 500,
+        // width: 100,
 
     },
     {
         title: 'Grading',
         dataIndex: 'grade_id',
-        width: 500,
+        // width: 100,
 
     }
 
@@ -199,7 +199,6 @@ function TableData(props: PropTable) {
 
     const handleRowClick = (record: EmployE) => {
         // Kiểm tra và thay đổi trạng thái của input
-        // ...
         // Chỉ định hàng đã được chọn
         setSelectedRowKeys([...selectedRowKeys,record.id]);
         setSelectedRows([ ...selectedRows, record]);
