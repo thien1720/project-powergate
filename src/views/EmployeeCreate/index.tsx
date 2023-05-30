@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs, Button, Form, Input } from 'antd';
+import styled from 'styled-components';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { FormInstance } from 'antd/lib/form';
 import { FiAlertOctagon } from "react-icons/fi";
@@ -24,6 +25,7 @@ import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 import "./style.scss"
+import Employee from "../Employee";
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
 
@@ -68,6 +70,15 @@ export interface DataForm {
     benefits?: Benefit[],
 }
 
+interface StyledTabsProps {
+    isActive: boolean;
+}
+const StyledTabs = styled(Tabs) <StyledTabsProps>`
+  .ant-tabs-tab-active {
+    background-color: ${({ isActive }) => (isActive ? 'inherit' : '')};
+    // Thêm các thuộc tính CSS khác tùy ý
+  }
+`;
 
 function EmployeeCreate() {
     const formRef = useRef<FormInstance>(null);
@@ -77,6 +88,7 @@ function EmployeeCreate() {
     const [form] = Form.useForm();
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
+    const [activeTab, setActiveTab] = useState<string>("");
     const [isAdd, setIsAdd] = useState(true)
     const [isEmploy, setIsEmploy] = useState(false)
     const [isContact, setIsContact] = useState(false)
@@ -89,6 +101,8 @@ function EmployeeCreate() {
     const [fileLists, setFileList] = useState<UploadFile[]>([])
     const [fileListContact, setFileListContact] = useState<any>([])
 
+    console.log("contact", isContact)
+    console.log("employy", isEmploy)
     const formData = new FormData();
     // formData.append('employee_id', String(id));
     fileLists.forEach((file) => {
@@ -193,24 +207,121 @@ function EmployeeCreate() {
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+
     const handleTabChange = (activeKey: string) => {
-        formRef.current?.validateFields().then(() => {
-            console.log('Form is valid');
+        // setActiveTab(activeKey);
+        console.log(activeKey)
+        formRef.current?.validateFields().then((values) => {
+
             setIsEmploy(false)
             setIsContact(false)
             setIsAdd(false)
             // Do something when the form is valid
         }).catch((error: any) => {
-            console.log('Form validation failed:', error);
-            // Do something when the form is invalid
+            // console.log(error)
+            const filErrorCon = error.errorFields.some((err: any) => {
+                // console.log(err.name.toString())
+                return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
+            })
 
-            if (error.errorFields && activeKey == "1") {
-                setIsContact(true)
-            }
-            if (error.errorFields && activeKey == "2") {
-                // setIsContact(true)
+            const filErrorEm = error.errorFields.some((err: any) => {
+                // console.log(err.name.toString())
+                return err.name.toString() === "name"
+                    || err.name.toString() === "gender"
+                    || err.name.toString() === "nc_id"
+                    || err.name.toString() === "ktp_no"
+                    || err.name.toString() === "nc_id"
+            })
+
+            // check Employee
+            if (error.errorFields && activeKey == "2" && filErrorEm) {
+                // console.log("contract")
                 setIsEmploy(true)
+                if (filErrorCon) {
+                    // setIsEmploy(false)
+                    console.log("contactset")
+                    setIsContact(true)
+                    return
+                }
+            } else if (filErrorCon) {
+
+                setIsEmploy(false)
             }
+
+            // check contact
+            if (error.errorFields && activeKey == "1" && filErrorCon) {
+                // console.log("employContact")
+
+                setIsContact(true)
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                // setIsEmploy(true)
+            } else if (filErrorEm) {
+
+                setIsContact(false)
+
+            }
+
+            // check Employee Detail
+            if (error.errorFields && activeKey === "3") {
+                // console.log("detail")
+                // console.log(filErrorEm)
+                if(filErrorCon && filErrorEm){
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if(filErrorCon){
+                    setIsContact(true)
+                    return
+                }
+                
+            } 
+            // check Salary
+            if (error.errorFields && activeKey == "4" ) {
+                // console.log(filErrorEm)
+                if(filErrorCon && filErrorEm){
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if(filErrorCon){
+                    setIsContact(true)
+                    return
+
+                }
+                
+            } 
+
+            // check other
+            if (error.errorFields && activeKey == "5" ) {
+                // console.log(filErrorEm)
+                if(filErrorCon && filErrorEm){
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if(filErrorCon){
+                    setIsContact(true)
+                    return
+                }
+                
+            } 
         });
     };
 
@@ -232,7 +343,6 @@ function EmployeeCreate() {
         getEmployee()
     }, [])
 
-    const tabBarClassName = isEmploy ? 'custom-tab-bar warning-tabpane' : 'custom-tab-bar';
 
     return <div className={cx("employee-create-update")}>
         <div className={cx("map-page")}>
@@ -274,43 +384,43 @@ function EmployeeCreate() {
             <div className={cx("tab-ui")}>
 
                 <Tabs
+                    // type="editable-card"
                     defaultActiveKey="1"
                     type="card"
                     onChange={handleTabChange}
+                    // activeKey={activeTab}
                 >
                     <TabPane
-                        // style={{ background: isEmploy ? "red" : "" }}
-                        // tabBarStyle={{ background: isEmploy ? "red" : "#333" }}
-                        // className={isEmploy ? cx("warning-tabpane") : ""}
-                        key="1"
 
+                        key="1"
+                        // className={activeTab === '1' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
-                            <div
-                                className={(isEmploy 
-                                    ? cx("ant-tabs-tab" ,"warning-tabpane") 
-                                    : "ant-tabs-tab")}
+                            <Button
+                                // isValid={isEmploy}
+                                type="link"
+                                className={isEmploy ? "warning-text" : "nomal-btn"}
                             >
-                                <Button type="link"
-                                >
-                                    Employyee Infomation
-                                    {isEmploy
-                                        ? <FiAlertOctagon
-                                            className={cx("warning-infomation")}
-                                        />
-                                        : <></>
-                                    }
-                                </Button>
-                            </div>
+                                Employyee Infomation
+                                {isEmploy
+                                    ? <FiAlertOctagon
+                                        className={cx("warning-infomation")}
+                                    />
+                                    : <></>
+                                }
+                            </Button>
+
+
                         }
                     >
                         <EmployInfomation />
                     </TabPane>
 
                     <TabPane
+                        // className={activeTab === '2' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
                             <Button
                                 type="link"
-                                className={"custom-tab-button"}
+                                className={isContact ? "custom-tab-button warning-text" : "custom-tab-button nomal-btn"}
                             >
                                 Contact Infomation
                                 {isContact
@@ -329,8 +439,9 @@ function EmployeeCreate() {
                         />
                     </TabPane>
                     <TabPane
+                        // className={activeTab === '3' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Employment Detail
                             </Button>
                         }
@@ -343,8 +454,9 @@ function EmployeeCreate() {
                         />
                     </TabPane>
                     <TabPane
+                        // className={activeTab === '4' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Salary & Wages
                             </Button>
                         }
@@ -356,8 +468,9 @@ function EmployeeCreate() {
                     </TabPane>
 
                     <TabPane
+                        // className={activeTab === '5' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Other
                             </Button>
                         }

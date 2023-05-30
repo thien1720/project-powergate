@@ -72,7 +72,7 @@ function Header() {
         </div>
         <div className={cx("user-language")}>
             <div className="select-language">
-                <select className={cx("form-select")} aria-label="Default select example">
+                {/* <select className={cx("form-select")} aria-label="Default select example">
                     <option value="VI" data-thumbnail="/image/payroll-management.svg">
                         <img src="/image/payroll-management.svg" />
                         VI
@@ -81,7 +81,7 @@ function Header() {
                         <img src="/image/payroll-management.svg" />
 
                         EN</option>
-                </select>
+                </select> */}
             </div>
 
             <div className={cx("info-user")}>

@@ -22,6 +22,7 @@ const columns: ColumnsType<EmployE> = [
     {
         title: 'Name',
         dataIndex: 'name',
+        className : cx("name")
     },
     {
         title: 'Gender',
@@ -43,8 +44,9 @@ const columns: ColumnsType<EmployE> = [
         className : cx("bank-account")
     },
     {
-        title: 'Name',
+        title: 'Family Card No.',
         dataIndex: 'family_card_number',
+        className : cx('family-card')
     },
     {
         title: 'Marriage Status',

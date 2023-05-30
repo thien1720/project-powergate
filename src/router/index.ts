@@ -11,7 +11,14 @@ const RouterPage = [
     {
         path: "/",
         component : Login,
-        layout: null
+        layout: null, 
+    
+    },
+    {
+        path: "/auth/sign-in",
+        component : Login,
+        layout: null, 
+    
     },
     {
         path: "/forgot",
@@ -20,7 +27,9 @@ const RouterPage = [
     },
     {
         path : "/employee", 
-        component : Employee
+        component : Employee,
+        protext : true
+
     }, 
     {
         path : "/employee/create-or-update",

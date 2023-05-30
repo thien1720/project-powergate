@@ -8,6 +8,7 @@ import { BsSearch } from "react-icons/bs";
 import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
+import useDeboune from '../../common/hookDeboune'
 import { Rowid } from "../../component/EmployBtn";
 import EmployBtn from "../../component/EmployBtn"
 import TableData from "../../component/TableList";
@@ -32,6 +33,7 @@ interface userD {
 function Employee() {
 
     const [query, setQuery] = useState('');
+    const debounces = useDeboune(query, 500)
     const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
@@ -40,19 +42,7 @@ function Employee() {
     const [page, setPage] = useState({})
     const userJSON: string = localStorage.getItem('auth') || "";
     const idUser = JSON.parse(userJSON);
-
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
-    const handleSearch = debounce(async () => {
-        if (query) {
-            // Thực hiện tìm kiếm khi người dùng nhập vào input
-            const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}?search=${query}`, "get"));
-            dispatch(addEmployeeDocment(employee.data.data))
-            // console.log(employee)
-        } else {
-            getEmployee()
-        }
-
-    }, 500);
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         let search;
         if (event.target.value) {
@@ -64,10 +54,7 @@ function Employee() {
         }
         setQuery(event.target.value);
         setSearchParams(search, { replace: true });
-
-        handleSearch(); // Gọi hàm debounce
     };
-
     const getEmployee = async () => {
         setLoading(true)
         const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
@@ -76,10 +63,29 @@ function Employee() {
         setLoading(false)
 
     }
+    useEffect(() => {
+        if (!debounces.trim()) {
+            getEmployee()
+            return
+        }
+        const handleSearch = async () => {
+
+            // Thực hiện tìm kiếm khi người dùng nhập vào input
+            const search = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}?search=${encodeURIComponent(debounces)}`, "get"));
+            dispatch(addEmployeeDocment(search.data.data))
+            setPage(search.data)
+
+            console.log(search)
+
+        }
+
+        handleSearch()
+
+    }, [debounces])
 
     useEffect(() => {
         getEmployee()
-    }, [query])
+    }, [])
     return <div className={cx("employee-page")}>
         <div className={cx("map-page")}>
             <Link to="/">General</Link>
@@ -97,7 +103,7 @@ function Employee() {
             </div>
         </div>
         <div className={cx("show-list")}>
-            <EmployBtn deleteEm={selectedRowKeys} />
+            <EmployBtn deleteEm={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys}/>
 
             <SimpleBar
                 style={{ maxHeight: 500 }}

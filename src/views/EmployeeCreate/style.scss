@@ -15,36 +15,31 @@
 
 .ant-tabs-tab-active {
   background-color: var(--gener-ral) !important;
-  button {
-    // color: ;
-    color: #fff !important;
-  }
-  .ant-tabs-tab-btn {
-  }
 }
 .ant-tabs-tab {
   // định nghĩa CSS cho mỗi tab
   margin-right: 20px;
   font-size: 16px;
   font-weight: bold;
-  // color: var(--form-login);
   border: none;
-  background-color: #1890ff;
   border-radius: 0;
   transition: all 0.3s;
   border-radius: 4px !important;
+  button {
+    span {
+      font-weight: 500;
+    }
+  }
   &.ant-tabs-tab-active {
     // định nghĩa CSS cho tab được chọn
     color: #1890ff;
     border-bottom: 2px solid #1890ff;
     background-color: transparent;
-  }
-
-  &:hover {
-    // định nghĩa CSS cho tab khi hover
-    color: #1890ff;
-    border-bottom: 2px solid #1890ff;
-    background-color: #f0f0f0;
+    .nomal-btn{
+      span{
+        color: var(--nomal-color);
+      }
+    }
   }
 }
 
@@ -56,4 +51,17 @@
 
 .warning-tabpane {
   background-color: red !important;
+}
+
+.custom-class {
+  background-color: red;
+}
+
+.active-tab {
+  background-color: red;
+}
+.warning-infomation,
+.warning-text {
+  color: red !important;
+  font-weight: 500;
 }

@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
-import { Button,Space, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
+import { Button, Space, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { AiOutlineDelete } from "react-icons/ai";
 
@@ -14,8 +14,8 @@ const cx = classNames.bind(styles);
 export interface FormUpload {
     contract_date: any,
     name: string,
-    fileList: UploadFile[], 
-    deletedContracts ?: number
+    fileList: UploadFile[],
+    deletedContracts?: number
 }
 
 function ContactInfomation({ fileListContact, setFileListContact }: any) {
@@ -24,12 +24,16 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
     const initialFormUpload = {
         contract_date: "",
         name: "",
-        fileList: [], 
-        deletedContracts : undefined
-      };
+        fileList: [],
+        deletedContracts: undefined
+    };
     const [formUpload, setFormUpload] = useState<FormUpload>(initialFormUpload)
-    const newLists = fileListContact.map((item: any, index: number) => {        
-            return { ...item, index: index }
+    const [ischeckDate, setCheckDate] = useState<Boolean>(false)
+    const [ischeckName, setCheckName] = useState<Boolean>(false)
+    const [ischeckFile, setCheckFile] = useState<Boolean>(false)
+
+    const newLists = fileListContact.map((item: any, index: number) => {
+        return { ...item, index: index }
     })
     const columns = [
         {
@@ -51,7 +55,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
             title: 'Action',
             // dataIndex: '',
             key: 'fileList',
-            render: (_ : any, record : any, index : number) => (<>
+            render: (_: any, record: any, index: number) => (<>
 
                 <Space size="middle">
 
@@ -65,23 +69,41 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
 
     const handleBeforeUpload = (file: RcFile, fileList: RcFile[]) => {
         // Trả về false để ngăn chặn chức năng submit mặc định
+        setCheckFile(false)
         return false;
     };
     const handeleDeleteFile = (indexs: number) => {
-        const fileList = fileListContact.filter((item :RcFile, index : number) => index !== indexs);
+        const fileList = fileListContact.filter((item: RcFile, index: number) => index !== indexs);
         setFileListContact(fileList);
-        const findId = fileListContact.find((item :RcFile, index : number) => index == indexs);
-        setFormUpload({...formUpload, deletedContracts : findId.id})
-        
+        const findId = fileListContact.find((item: RcFile, index: number) => index == indexs);
+        setFormUpload({ ...formUpload, deletedContracts: findId.id })
+
     }
 
     const handeleChangeFile = ({ fileList }: { fileList: UploadFile[] }) => {
         setFormUpload({ ...formUpload, fileList: [...fileList] });
     };
-    const handleAddContact = useCallback(() => {   
-        formUpload.contract_date = convert(formUpload.contract_date)
-        setFileListContact([...fileListContact, formUpload])
-        setFormUpload(initialFormUpload);
+    const handleAddContact = useCallback(() => {
+        if (formUpload.contract_date == "") {
+            setCheckDate(true)
+            return
+        }
+        if (formUpload.name == "") {
+            setCheckName(true)
+            return
+        }
+        if (formUpload.fileList.length == 0) {
+            setCheckFile(true)
+            return
+        }
+
+        if (formUpload.contract_date !== "", formUpload.name != "", formUpload.fileList.length > 0) {
+
+            formUpload.contract_date = convert(formUpload.contract_date)
+            setFileListContact([...fileListContact, formUpload])
+            console.log(formUpload)
+            setFormUpload(initialFormUpload);
+        }
 
     }, [formUpload]);
 
@@ -147,7 +169,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                 <div className={cx("form-1")}>
 
                     <Form.Item
-                        
+
                         className={cx("label-custom")}
                         label={renderCustomLabel("Date of Start")}
                         rules={[{
@@ -158,16 +180,17 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                         <DatePicker
                             value={formUpload.contract_date}
                             onChange={(date: any) => {
+                                setCheckDate(false)
                                 // const newConTractDate = convert(date)
                                 setFormUpload({ ...formUpload, contract_date: date });
                             }}
                             size="large"
-                            className={cx("style-datepick")}
+                            className={cx("style-datepick", ischeckDate ? "warning" : "")}
                         />
                     </Form.Item>
 
                     <Form.Item
-                        
+
                         className={cx("label-custom")}
                         label={renderCustomLabel("Contract Name")}
                         rules={[{
@@ -179,10 +202,11 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                             size="large"
                             value={formUpload.name}
                             onChange={(event: any) => {
+                                setCheckName(false)
                                 setFormUpload({ ...formUpload, name: event.target.value });
                             }}
                             type="text"
-                            className={cx("style-input")}
+                            className={cx("style-input", ischeckName ? "warning" : "")}
                             placeholder="Contract Name" />
                     </Form.Item>
 
@@ -203,6 +227,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                         >
                             <UploadOutlined />
                             Upload File</Button>
+                        {ischeckFile && <p className={cx("warning-text")}>No file chosen</p>}
                     </Upload>
 
                     <p

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState , memo} from "react";
 import { ThunkDispatch } from 'redux-thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action } from 'redux';
@@ -17,14 +17,12 @@ export interface Rowid {
     record_ids: number
 }
 export interface AddOrDelete {
-    deleteEm: number[]
+    deleteEm: number[], 
+    setSelectedRowKeys: any
 }
 
-function EmployBtn({ deleteEm }: AddOrDelete) {
-
-    // const newDelete = deleteEm.map((item) => ({ record_id: item }));
+function EmployBtn({ deleteEm , setSelectedRowKeys}: AddOrDelete) {
     const newDelete = { record_ids: deleteEm }
-    // console.log(newDelete);
     const checkRowDelete = deleteEm.length > 0 ? false : true
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userJSON : string  = localStorage.getItem('auth') || "";
@@ -42,6 +40,7 @@ function EmployBtn({ deleteEm }: AddOrDelete) {
             const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
             dispatch(addEmployeeDocment(employee.data.data))
             // setPage(employee.data)
+            setSelectedRowKeys([])
         }
         console.log(deleteE)
     };
@@ -57,12 +56,12 @@ function EmployBtn({ deleteEm }: AddOrDelete) {
             open={isModalOpen}
             onOk={handleOk}
             onCancel={handleCancel}
-            width={300}
+            width={400}
             footer={[
-                <Button size="large" key="back" onClick={handleCancel}>
+                <Button size="large" className={cx("custom-btn")} key="back" onClick={handleCancel} >
                     NO
                 </Button>,
-                <Button size="large" key="submit" type="primary" onClick={handleOk}>
+                <Button size="large" className={cx("custom-btn")} key="submit" type="primary" onClick={handleOk} >
                     YES
                 </Button>
             ]}
@@ -80,7 +79,7 @@ function EmployBtn({ deleteEm }: AddOrDelete) {
         <div className={cx("btn-add-employ")}>
             <button
                 disabled={checkRowDelete}
-                className={cx("btn", "btn-delete")}
+                className={cx("btn" , checkRowDelete ? "btn-delete" : "")}
                 onClick={showModal}
             >
                 <img src="/image/delete-btn.svg" alt="delete-btn" />
@@ -90,4 +89,4 @@ function EmployBtn({ deleteEm }: AddOrDelete) {
     </div>);
 }
 
-export default EmployBtn;
+export default memo(EmployBtn);

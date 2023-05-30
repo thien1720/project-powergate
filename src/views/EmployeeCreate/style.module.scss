@@ -38,14 +38,14 @@
     margin-top: 30px;
       .warning-infomation {
         position: absolute;
-        color: var(--upload-img);
+        // color: var(--upload-img);
         font-size: 2rem;
         right: -8px;
       }
   }
 
   .btn-login {
-    min-width: 80px;
+    min-width: 75px;
     padding: 0 50px;
   }
 }

@@ -67,9 +67,9 @@ function PaginationPage({ pagiNation , setPage , setLoading }: {pagiNation : any
 
         <div className={cx("show-item-total")}>
             <p>
-                <span>{from}</span>-
-                <span>{to}</span>of
-                <span>{total}</span>
+                <span>{from ? from : 0}</span>-
+                <span>{to ? to : 0}</span>of
+                <span>{total ? total : 0}</span>
             </p>
         </div>
     </div>)

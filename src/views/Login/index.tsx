@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, Navigate, useNavigate , useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button, Select, Form, Input } from 'antd';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -17,17 +17,40 @@ import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
+interface FormValues {
+    username: string;
+    password: string;
+}
+
 function Login() {
     const userD = useSelector((state: any) => state.authReduce)
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
+    const [inputValue, setValue] = useState<FormValues>({ username: '', password: '' });
     const [, forceUpdate] = useState({});
-    const [searchParams] = useSearchParams({'auth/sign-in': ''});
+    const [searchParams] = useSearchParams({ 'auth/sign-in': '' });
 
     let navigate = useNavigate()
 
     useEffect(() => {
         forceUpdate({});
     }, [])
+
+    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     let { value, name } = e.target;
+    //     console.log(name)
+    //     if (value.length && value[0] === ' ') {
+    //         let data: Record<string, string> = { ...inputValue };
+    //         data[name] = '';
+    //         setValue(data as FormValues);
+    //         return;
+    //     }
+    //     // Cập nhật giá trị trường Input khác
+    //     setValue((prevValue) => ({
+    //         ...prevValue,
+    //         [name]: value,
+    //     }));
+    // }
+
     const onFinish = (values: any) => {
         async function singIn(values: any) {
             const json = await dispatch(fetchThunk(API_PATHS.signIn, "post", values))
@@ -89,10 +112,12 @@ function Login() {
                         required: true,
                         message: 'Please input your Username!'
                     }]}
+                    normalize={(value, prevVal, prevVals) => value.trim()}
                 >
                     <Input
+                        value={inputValue.username}
                         size="large"
-
+                
                         type="text"
                         className={cx("style-input")}
                         placeholder="Username" />
@@ -107,9 +132,13 @@ function Login() {
                     },
                     { min: 8, max: 16, message: 'Username must be at least 8 characters long!' },
                     ]}
+
+                    normalize={(value, prevVal, prevVals) => value.trim()}
                 >
                     <Input.Password
+                        value={inputValue.password}
                         size="large"
+                
                         className={cx("style-input")}
                         type="password"
                         placeholder="Password"
