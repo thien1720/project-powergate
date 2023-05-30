@@ -1,6 +1,7 @@
 import { Button, Select, Form, Input, DatePicker, Checkbox } from 'antd';
 import classNames from "classnames/bind"
 import type { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { useTranslation } from 'react-i18next';
 
 import renderCustomLabel from '../CustomLabel/customLabel';
 import styles from "./style.module.scss";
@@ -11,9 +12,9 @@ export interface EmDetail {
     position: any;
 }
 
-function EmployDetail(
-    { departMement, position }: EmDetail
-) {
+function EmployDetail({ departMement, position }: EmDetail) {
+    const { t } = useTranslation();
+
     const onChange = (e: CheckboxChangeEvent) => {
         console.log(`checked = ${e.target.checked}`);
     };
@@ -30,7 +31,7 @@ function EmployDetail(
         <div className={cx("box-detail")}>
             <Form.Item
                 className={cx("label-custom")}
-                label={renderCustomLabel("Department")}
+                label={renderCustomLabel(t("Department"))}
 
             >
                 <Select
@@ -50,7 +51,7 @@ function EmployDetail(
 
             <Form.Item
                 className={cx("label-custom")}
-                label={renderCustomLabel("Position")}
+                label={renderCustomLabel(t("Position"))}
             >
                 <Select
                     className={cx("item-select")}

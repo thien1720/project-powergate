@@ -1,12 +1,13 @@
 import { useState } from "react";
-import {  Link, useParams, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Space, Modal } from 'antd';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Button, Space, Modal } from 'antd';
+import { useTranslation } from 'react-i18next';
 
 import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
-import { setAuthorization, setUserInfo, logout } from "../../service/redux/auth.login"
+import { logout } from "../../service/redux/auth.login"
 import { AppState } from '../../service/reducer';
 
 import classNames from "classnames/bind"
@@ -14,13 +15,20 @@ import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
 function Header() {
-
+    const [selectedLanguage, setSelectedLanguage] = useState<string>('en');
+    const { i18n } = useTranslation();
     const [userDetail, setUserDetail] = useState(false)
     const [isModalOpen, setIsModalOpen] = useState(false);
     const userJSON: string = localStorage.getItem('auth') || "";
     const ifUser = JSON.parse(userJSON);
     let navigate = useNavigate()
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
+
+    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedValue = event.target.value;
+        setSelectedLanguage(selectedValue);
+        i18n.changeLanguage(selectedValue);
+    };
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -46,7 +54,7 @@ function Header() {
             onOk={handleOk}
             onCancel={handleCancel}
             width={400}
-            
+
             className={cx("module-logout")}
             footer={[
                 <Button className={cx("custom-btn")} size="large" key="back" onClick={handleCancel}>
@@ -72,16 +80,20 @@ function Header() {
         </div>
         <div className={cx("user-language")}>
             <div className="select-language">
-                {/* <select className={cx("form-select")} aria-label="Default select example">
-                    <option value="VI" data-thumbnail="/image/payroll-management.svg">
+                <select
+                    className={cx("form-select")}
+                    aria-label="Default select example"
+                    onChange={handleLanguageChange}
+                >
+                    <option value="en" data-thumbnail="/image/payroll-management.svg">
+                        <img src="/image/payroll-management.svg" />
+                        EN
+                    </option>
+                    <option value="vi" data-thumbnail="/image/payroll-management.svg">
                         <img src="/image/payroll-management.svg" />
                         VI
                     </option>
-                    <option value="EN" data-thumbnail="/image/payroll-management.svg">
-                        <img src="/image/payroll-management.svg" />
-
-                        EN</option>
-                </select> */}
+                </select>
             </div>
 
             <div className={cx("info-user")}>

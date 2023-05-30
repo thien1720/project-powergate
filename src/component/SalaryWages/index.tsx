@@ -1,5 +1,6 @@
-
 import { Button, Select, Form, Input, DatePicker, InputNumber } from 'antd';
+import { useTranslation } from 'react-i18next';
+
 import classNames from "classnames/bind"
 import renderCustomLabel from "../CustomLabel/customLabel"
 import styles from "./style.module.scss";
@@ -10,11 +11,9 @@ export interface Salary{
 }
 
 
-function SalaryWages({defaultSalary} : Salary) {
+function SalaryWages(defaultSalary: Salary) {
+    const { t } = useTranslation();
 
-    const onChange = (value: any) => {
-        console.log('changed', value);
-    };
     return (<div className={cx("salary-wages")}>
         <div className={cx("head-infomation")}>
             <h1>Salary & Wages</h1>
@@ -28,7 +27,7 @@ function SalaryWages({defaultSalary} : Salary) {
             <Form.Item
                 name="basic_salary"
                 className={cx("label-custom")}
-                label={renderCustomLabel("Basic Salary" , true)}
+                label={renderCustomLabel(t("Basic Salary") , true)}
                 rules={[{ required: true, message: 'Please input basic salary' }]}
             >
                 <InputNumber
@@ -40,7 +39,7 @@ function SalaryWages({defaultSalary} : Salary) {
             <Form.Item
                 name="audit_salary"
                 className={cx("label-custom")}
-                label={renderCustomLabel("Basic Salary (Audit)" , true)}
+                label={renderCustomLabel(t("Basic Salary (Audit)") , true)}
                 rules={[{ required: true, message: 'Please input audit salary' }]}
 
             >
@@ -53,7 +52,7 @@ function SalaryWages({defaultSalary} : Salary) {
             <Form.Item
                 name="safety_insurance"
                 className={cx("label-custom")}
-                label={renderCustomLabel("Safety Insurance Amount" , true)}
+                label={renderCustomLabel(t("Safety Insurance Amount") , true)}
                 rules={[{ required: true, message: 'Please input safety insurance' }]}
 
             >
@@ -68,7 +67,7 @@ function SalaryWages({defaultSalary} : Salary) {
             <Form.Item
                 name="health_insurance"
                 className={cx("label-custom")}
-                label={renderCustomLabel("Healthy Insurance Amount")}
+                label={renderCustomLabel(t("Healthy Insurance Amount"))}
             >
                 <InputNumber
                     type='number'
@@ -81,7 +80,7 @@ function SalaryWages({defaultSalary} : Salary) {
             <Form.Item
                 name="meal_allowance"
                 className={cx("label-custom")}
-                label={renderCustomLabel("GenMeal Allowanceder" , true)}
+                label={renderCustomLabel(t("GenMeal Allowanceder") , true)}
                 rules={[{ required: true, message: 'Please input meal allowance' }]}
 
             >

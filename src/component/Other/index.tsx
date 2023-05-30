@@ -1,11 +1,10 @@
 import { useState, useCallback, useEffect } from "react"
-import { NavLink, Link, useParams } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch,  } from 'react-redux';
+import { useTranslation } from 'react-i18next';
 import { Select, Form, Input, Upload, Table, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
-import { RcFile, UploadChangeParam } from 'antd/lib/upload';
+import { RcFile, } from 'antd/lib/upload';
 import type { ColumnsType } from 'antd/es/table';
-import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { AiOutlineDelete } from "react-icons/ai";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -49,6 +48,7 @@ interface DataType {
 
 function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionGrade }: any) {
     const [optionBenefit, setOptionBenefit] = useState<any>([])
+    const { t } = useTranslation();
     let todayDate = new Date().toISOString().slice(0, 10);
     const newLists = fileLists.map((item: any, index: number) => {        
         if(item.document){
@@ -105,7 +105,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
     ];
     const onGenderChangeGrade = (value: string) => {
         const getGrade = async () => {
-            const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/grade?${value}`, "get"));
+            await dispatch(fetchThunk(`${API_PATHS.grade}/grade?${value}`, "get"));
         }
         getGrade()
     }
@@ -156,7 +156,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
             <div className={cx("form-other")}>
                 <Form.Item
                     name="grade_id"
-                    label={renderCustomLabel("Grade")}
+                    label={renderCustomLabel(t("Grade"))}
                 
                 >
 
@@ -176,7 +176,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
 
                 <Form.Item
                     name="benefits"
-                    label={renderCustomLabel("Benefit")}
+                    label={renderCustomLabel(t("Benefit"))}
                 >
                     <Select
                         size="large"
@@ -192,7 +192,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
                 </Form.Item>
 
                 <Form.Item
-                    label={renderCustomLabel("Remark")}
+                    label={renderCustomLabel(t("Remark"))}
                     
                     >
 
@@ -204,7 +204,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
 
                 <Form.Item
                     // name="HRM User Account"
-                    label={renderCustomLabel("HRM User Account")}
+                    label={renderCustomLabel(t("HRM User Account"))}
                     >
                     <Select
                         size="large"

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { NavLink, Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
-
+import { useTranslation } from 'react-i18next';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -25,6 +25,7 @@ export interface EmInfo {
 
 function EmployInfomation() {
     let { id } = useParams()
+    const { t } = useTranslation();
     const isEmployE = id ? true : false
 
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
@@ -54,7 +55,7 @@ function EmployInfomation() {
 
                 <Form.Item
                     className={cx("label-custom")}
-                    label={renderCustomLabel("Name" , true)}
+                    label={renderCustomLabel(t("Name") , true)}
                     name="name"
                     rules={[{
                         required: true,
@@ -72,7 +73,7 @@ function EmployInfomation() {
                 <Form.Item
                     name="gender"
                     className={cx("label-custom")}
-                    label={renderCustomLabel("Gender" , true)}
+                    label={renderCustomLabel(t("Gender") , true)}
                     rules={[{
                         required: true,
                         message: 'Please input your Gender!'
@@ -93,7 +94,7 @@ function EmployInfomation() {
                 <Form.Item
                     name="dob"
                     className={cx("label-custom")}
-                    label={renderCustomLabel("Date of birth" , true)}
+                    label={renderCustomLabel(t("Date of birth") , true)}
                     rules={[{
                         required: true,
                         message: 'Please input your Place of birth!'
@@ -108,7 +109,7 @@ function EmployInfomation() {
 
                 <Form.Item
                     name="pob"
-                    label={renderCustomLabel("Place of birth" )}
+                    label={renderCustomLabel(t("Place of birth" ))}
                     className={cx("label-custom")}
 
                 >
@@ -139,7 +140,7 @@ function EmployInfomation() {
                     name="nc_id"
                     
                     className={cx("label-custom")}
-                    label={renderCustomLabel("National Card ID" , true)}
+                    label={renderCustomLabel(t("National Card ID") , true)}
                     rules={[{
                         required: true,
                         message: 'Please input your National Card ID!'
@@ -156,7 +157,7 @@ function EmployInfomation() {
                     className={cx("label-custom")}
 
                     name="home_address_1"
-                    label={renderCustomLabel("HomeAddress1")}
+                    label={renderCustomLabel(t("HomeAddress1"))}
                     rules={[{
                         message: 'Please input your Home Address 1!'
                     }]}
@@ -171,7 +172,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="home_address_2"
-                    label={renderCustomLabel("Home Address 2")}
+                    label={renderCustomLabel(t("Home Address 2"))}
                     rules={[{
                         message: 'Please input your Home Address 2!'
                     }]}
@@ -189,7 +190,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="mobile_no"
-                    label={renderCustomLabel("Mobile No")}
+                    label={renderCustomLabel(t("Mobile No"))}
                     rules={[{
 
                         message: 'Please input your Mobile No!'
@@ -204,7 +205,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="tel_no"
-                    label={renderCustomLabel("Tel No" )}
+                    label={renderCustomLabel(t("Tel No") )}
                     rules={[{
 
                         message: 'Please input your Tel No!'
@@ -221,7 +222,7 @@ function EmployInfomation() {
                     className={cx("label-custom")}
 
                     name="marriage_id"
-                    label={renderCustomLabel("Marriage Status")}
+                    label={renderCustomLabel(t("Marriage Status"))}
                 >
                     <Select
                         size="large"
@@ -241,7 +242,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="bank_account_no"
-                    label={renderCustomLabel("Bank Card No.")}
+                    label={renderCustomLabel(t("Bank Card No."))}
                     rules={[{
                         message: 'Please input your Bank Card No.!'
                     }]}
@@ -255,7 +256,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="bank_name"
-                    label={renderCustomLabel("Bank Name")}
+                    label={renderCustomLabel(t("Bank Name"))}
                     rules={[{
                         message: 'Please input your Bank Name!'
                     }]}
@@ -271,7 +272,7 @@ function EmployInfomation() {
                     className={cx("label-custom")}
 
                     name="family_card_number"
-                    label={renderCustomLabel("Family Card Number")}
+                    label={renderCustomLabel(t("Family Card Number"))}
                     rules={[{
                         message: 'Please input your Family Card Number!'
                     }]}
@@ -285,7 +286,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="safety_insurance_no"
-                    label={renderCustomLabel("Safety Insurance No.")}
+                    label={renderCustomLabel(t("Safety Insurance No."))}
                     rules={[{
                         message: 'Please input your Safety Insurance No.!'
                     }]}
@@ -299,7 +300,7 @@ function EmployInfomation() {
                 <Form.Item
                     className={cx("label-custom")}
                     name="health_insurance_no"
-                    label={renderCustomLabel("Health Insurance No.")}
+                    label={renderCustomLabel(t("Health Insurance No."))}
                 >
                     <Input
                         size="large"

@@ -322,7 +322,7 @@ function EmployeeCreateOrUpdate() {
                         className={cx("")}
                         key="1"
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Employyee Infomation
                             </Button>
                         }
@@ -334,7 +334,7 @@ function EmployeeCreateOrUpdate() {
 
                     <TabPane
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Contact Infomation
                             </Button>
                         }
@@ -348,7 +348,7 @@ function EmployeeCreateOrUpdate() {
 
                     <TabPane
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Salary & Wages
                             </Button>
                         }
@@ -362,7 +362,7 @@ function EmployeeCreateOrUpdate() {
 
                     <TabPane
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Employment Detail
                             </Button>
                         }
@@ -376,7 +376,7 @@ function EmployeeCreateOrUpdate() {
                     </TabPane>
                     <TabPane
                         tab={
-                            <Button type="link" className="custom-tab-button">
+                            <Button type="link" className="custom-tab-button nomal-btn">
                                 Other
                             </Button>
                         }

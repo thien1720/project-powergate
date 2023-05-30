@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Select, Form, Input } from 'antd';
-import { Action } from 'redux';
+import { useTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Action } from 'redux';
+import { Button, Select, Form, Input } from 'antd';
 import Cookies from 'js-cookie';
 
 import { ACCESS_TOKEN_KEY } from '../../utils/constants';
@@ -28,28 +29,13 @@ function Login() {
     const [inputValue, setValue] = useState<FormValues>({ username: '', password: '' });
     const [, forceUpdate] = useState({});
     const [searchParams] = useSearchParams({ 'auth/sign-in': '' });
-
+    const { t } = useTranslation();
     let navigate = useNavigate()
 
     useEffect(() => {
         forceUpdate({});
     }, [])
 
-    // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     let { value, name } = e.target;
-    //     console.log(name)
-    //     if (value.length && value[0] === ' ') {
-    //         let data: Record<string, string> = { ...inputValue };
-    //         data[name] = '';
-    //         setValue(data as FormValues);
-    //         return;
-    //     }
-    //     // Cập nhật giá trị trường Input khác
-    //     setValue((prevValue) => ({
-    //         ...prevValue,
-    //         [name]: value,
-    //     }));
-    // }
 
     const onFinish = (values: any) => {
         async function singIn(values: any) {
@@ -107,7 +93,7 @@ function Login() {
             >
                 <Form.Item
                     name="username"
-                    label="Username"
+                    label={t('Username')}
                     rules={[{
                         required: true,
                         message: 'Please input your Username!'
@@ -117,7 +103,6 @@ function Login() {
                     <Input
                         value={inputValue.username}
                         size="large"
-                
                         type="text"
                         className={cx("style-input")}
                         placeholder="Username" />

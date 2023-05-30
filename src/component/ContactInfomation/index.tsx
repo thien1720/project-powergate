@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react";
-import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Button, Space, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
-import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
+import type { UploadFile } from 'antd/es/upload/interface';
 import { AiOutlineDelete } from "react-icons/ai";
-
+import { useTranslation } from 'react-i18next';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
 import { UploadOutlined } from '@ant-design/icons';
+
 import renderCustomLabel from "../CustomLabel/customLabel"
 import convert from "../../common/convertDate"
 import classNames from "classnames/bind"
@@ -20,6 +21,7 @@ export interface FormUpload {
 
 function ContactInfomation({ fileListContact, setFileListContact }: any) {
     let { id } = useParams()
+    const { t } = useTranslation();
     const isEmployE = id ? true : false
     const initialFormUpload = {
         contract_date: "",
@@ -122,7 +124,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                 <Form.Item
                     name="contract_start_date"
                     className={cx("label-custom")}
-                    label={renderCustomLabel("Date Start")}
+                    label={renderCustomLabel(t("Date Start"))}
                     rules={[{
                         required: true,
                         message: 'Please select date time'
@@ -140,7 +142,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                 <Form.Item
                     name="type"
                     className={cx("label-custom")}
-                    label={renderCustomLabel("Employee Type")}
+                    label={renderCustomLabel(t("Employee Type"))}
                     rules={[{
                         required: true,
                         message: 'Please select an option'
@@ -171,7 +173,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                     <Form.Item
 
                         className={cx("label-custom")}
-                        label={renderCustomLabel("Date of Start")}
+                        label={renderCustomLabel(t("Date of Start"))}
                         rules={[{
                             required: true,
                             message: ' '
@@ -192,7 +194,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                     <Form.Item
 
                         className={cx("label-custom")}
-                        label={renderCustomLabel("Contract Name")}
+                        label={renderCustomLabel(t("Contract Name"))}
                         rules={[{
                             required: true,
                             message: " "
