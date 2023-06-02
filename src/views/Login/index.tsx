@@ -115,7 +115,7 @@ function Login() {
                         required: true,
                         message: 'Please input your Password!'
                     },
-                    { min: 8, max: 16, message: 'Username must be at least 8 characters long!' },
+                    { min: 8, max: 16, message: 'Username must be at least 8 characters long and up to 16 characters!' },
                     ]}
 
                     normalize={(value, prevVal, prevVals) => value.trim()}

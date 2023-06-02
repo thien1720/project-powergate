@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from "react"
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { Tabs, Button, Form, Input } from 'antd';
-import styled from 'styled-components';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { FormInstance } from 'antd/lib/form';
 import { FiAlertOctagon } from "react-icons/fi";
@@ -25,7 +24,6 @@ import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 import "./style.scss"
-import Employee from "../Employee";
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
 
@@ -70,16 +68,6 @@ export interface DataForm {
     benefits?: Benefit[],
 }
 
-interface StyledTabsProps {
-    isActive: boolean;
-}
-const StyledTabs = styled(Tabs) <StyledTabsProps>`
-  .ant-tabs-tab-active {
-    background-color: ${({ isActive }) => (isActive ? 'inherit' : '')};
-    // Thêm các thuộc tính CSS khác tùy ý
-  }
-`;
-
 function EmployeeCreate() {
     const formRef = useRef<FormInstance>(null);
     let navigate = useNavigate()
@@ -88,7 +76,6 @@ function EmployeeCreate() {
     const [form] = Form.useForm();
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
-    const [activeTab, setActiveTab] = useState<string>("");
     const [isAdd, setIsAdd] = useState(true)
     const [isEmploy, setIsEmploy] = useState(false)
     const [isContact, setIsContact] = useState(false)
@@ -384,21 +371,17 @@ function EmployeeCreate() {
             <div className={cx("tab-ui")}>
 
                 <Tabs
-                    // type="editable-card"
                     defaultActiveKey="1"
                     type="card"
                     onChange={handleTabChange}
-                    // activeKey={activeTab}
+                  
                 >
                     <TabPane
-
                         key="1"
-                        // className={activeTab === '1' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
                             <Button
-                                // isValid={isEmploy}
                                 type="link"
-                                className={isEmploy ? "warning-text" : "nomal-btn"}
+                                className={isEmploy ? "custom-tab-button warning-text" : "custom-tab-button nomal-btn"}
                             >
                                 Employyee Infomation
                                 {isEmploy
@@ -408,15 +391,12 @@ function EmployeeCreate() {
                                     : <></>
                                 }
                             </Button>
-
-
                         }
                     >
                         <EmployInfomation />
                     </TabPane>
 
                     <TabPane
-                        // className={activeTab === '2' ? 'ant-tabs-tab-active custom-class' : ''}
                         tab={
                             <Button
                                 type="link"
@@ -439,7 +419,7 @@ function EmployeeCreate() {
                         />
                     </TabPane>
                     <TabPane
-                        // className={activeTab === '3' ? 'ant-tabs-tab-active custom-class' : ''}
+                       
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Employment Detail
@@ -454,7 +434,7 @@ function EmployeeCreate() {
                         />
                     </TabPane>
                     <TabPane
-                        // className={activeTab === '4' ? 'ant-tabs-tab-active custom-class' : ''}
+                        
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Salary & Wages
@@ -468,7 +448,7 @@ function EmployeeCreate() {
                     </TabPane>
 
                     <TabPane
-                        // className={activeTab === '5' ? 'ant-tabs-tab-active custom-class' : ''}
+                        
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Other

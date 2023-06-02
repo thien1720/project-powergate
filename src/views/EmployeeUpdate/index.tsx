@@ -24,7 +24,7 @@ import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
-import "./style.scss"
+import "./style.update.scss"
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
 

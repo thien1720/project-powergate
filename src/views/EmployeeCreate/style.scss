@@ -1,6 +1,5 @@
 .ant-tabs-nav {
   // định nghĩa CSS cho phần đầu tab
-
   &::before {
     border-bottom: none !important;
   }
@@ -13,18 +12,26 @@
 }
 
 .ant-tabs-tab-active {
-  background-color: var(--gener-ral) !important;
+  // background-color: var(--gener-ral) !important;
+  border: none !important;
+  button {
+    background-color: var(--gener-ral) !important;
+  }
 }
 .ant-tabs-tab {
   // định nghĩa CSS cho mỗi tab
+  background-color: transparent !important;
   margin-right: 20px;
   font-size: 16px;
   font-weight: bold;
-  border: none;
+  border: none !important;
   border-radius: 0;
   transition: all 0.3s;
   border-radius: 4px !important;
+  padding: 0 !important;
   button {
+    padding: 14px 20px;
+    background-color: var(--button-nomal);
     span {
       font-weight: 500;
     }
@@ -32,10 +39,17 @@
   &.ant-tabs-tab-active {
     // định nghĩa CSS cho tab được chọn
     color: #1890ff;
-    border-bottom: 2px solid #1890ff;
-    background-color: transparent;
-    .nomal-btn{
-      span{
+    .warning-infomation,
+    .warning-text {
+      background-color: var(--delete-btn) !important;
+      color: var(--back-input) !important;
+      font-weight: 500;
+    }
+    // .warning-text{
+    //   padding: 14px 34px;
+    // }
+    .nomal-btn {
+      span {
         color: var(--nomal-color);
       }
     }
@@ -48,19 +62,13 @@
   height: 100%;
 }
 
-.warning-tabpane {
-  background-color: red !important;
-}
-
-.custom-class {
-  background-color: red;
-}
-
-.active-tab {
-  background-color: red;
-}
 .warning-infomation,
 .warning-text {
+  // background-color: red;
   color: red !important;
   font-weight: 500;
+}
+
+.warning-text{
+  padding: 14px 34px !important;
 }
