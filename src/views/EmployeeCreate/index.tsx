@@ -9,8 +9,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import convert from "../../common/convertDate"
-import { Benefit } from "../../component/Other";
-import { EmployE } from '../../module/employee';
+import { Benefit , DataForm } from "../../module/employee";
 import EmployInfomation from "../../component/EmployInfomation";
 import ContactInfomation from "../../component/ContactInfomation";
 import EmployDetail from "../../component/EmployDetail";
@@ -27,46 +26,7 @@ import "./style.scss"
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
 
-export interface DataForm {
-    id?: number,
-    staff_id?: string,
-    name: string,
-    mother_name?: string,
-    bank_account_no?: number,
-    bank_name?: string,
-    family_card_number?: number,
-    company_id?: number,
-    gender: number,
-    home_address_1?: string,
-    home_address_2?: string,
-    dob: string,
-    contract_start_date: string,
-    pob?: string,
-    nc_id: number,
-    ktp_no?: number,
-    mobile_no?: number,
-    tel_no?: number,
-    marriage_id?: number,
-    safety_insurance_no?: number,
-    health_insurance_no?: number,
-    department_id?: number,
-    position_id?: number,
-    shift?: string,
-    type: number,
-    entitle_ot?: string,
-    meal_allowance_paid?: string;
-    operational_allowance_paid?: string,
-    attendance_allowance_paid?: string,
-    basic_salary: number,
-    audit_salary: number,
-    safety_insurance: number,
-    health_insurance?: number,
-    meal_allowance: number,
-    grade_id?: number,
-    remark?: string,
-    account_user_id?: number,
-    benefits?: Benefit[],
-}
+
 
 function EmployeeCreate() {
     const formRef = useRef<FormInstance>(null);
@@ -88,8 +48,7 @@ function EmployeeCreate() {
     const [fileLists, setFileList] = useState<UploadFile[]>([])
     const [fileListContact, setFileListContact] = useState<any>([])
 
-    console.log("contact", isContact)
-    console.log("employy", isEmploy)
+
     const formData = new FormData();
     // formData.append('employee_id', String(id));
     fileLists.forEach((file) => {
@@ -154,7 +113,6 @@ function EmployeeCreate() {
         } else {
             values.meal_allowance = values.meal_allowance
         }
-
         values.contract_start_date = convert(values.contract_start_date)
 
         async function handeAddChanges(values: any) {
@@ -197,9 +155,8 @@ function EmployeeCreate() {
 
     const handleTabChange = (activeKey: string) => {
         // setActiveTab(activeKey);
-        console.log(activeKey)
+        // console.log(activeKey)
         formRef.current?.validateFields().then((values) => {
-
             setIsEmploy(false)
             setIsContact(false)
             setIsAdd(false)
@@ -207,12 +164,10 @@ function EmployeeCreate() {
         }).catch((error: any) => {
             // console.log(error)
             const filErrorCon = error.errorFields.some((err: any) => {
-                // console.log(err.name.toString())
                 return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
             })
 
             const filErrorEm = error.errorFields.some((err: any) => {
-                // console.log(err.name.toString())
                 return err.name.toString() === "name"
                     || err.name.toString() === "gender"
                     || err.name.toString() === "nc_id"
@@ -231,7 +186,6 @@ function EmployeeCreate() {
                     return
                 }
             } else if (filErrorCon) {
-
                 setIsEmploy(false)
             }
 
@@ -246,16 +200,14 @@ function EmployeeCreate() {
                 }
                 // setIsEmploy(true)
             } else if (filErrorEm) {
-
                 setIsContact(false)
-
             }
 
             // check Employee Detail
             if (error.errorFields && activeKey === "3") {
                 // console.log("detail")
                 // console.log(filErrorEm)
-                if(filErrorCon && filErrorEm){
+                if (filErrorCon && filErrorEm) {
                     setIsContact(true)
                     setIsEmploy(true)
                     return
@@ -265,16 +217,16 @@ function EmployeeCreate() {
                     setIsEmploy(true)
                     return
                 }
-                if(filErrorCon){
+                if (filErrorCon) {
                     setIsContact(true)
                     return
                 }
-                
-            } 
+
+            }
             // check Salary
-            if (error.errorFields && activeKey == "4" ) {
+            if (error.errorFields && activeKey == "4") {
                 // console.log(filErrorEm)
-                if(filErrorCon && filErrorEm){
+                if (filErrorCon && filErrorEm) {
                     setIsContact(true)
                     setIsEmploy(true)
                     return
@@ -283,18 +235,18 @@ function EmployeeCreate() {
                     setIsEmploy(true)
                     return
                 }
-                if(filErrorCon){
+                if (filErrorCon) {
                     setIsContact(true)
                     return
 
                 }
-                
-            } 
+
+            }
 
             // check other
-            if (error.errorFields && activeKey == "5" ) {
+            if (error.errorFields && activeKey == "5") {
                 // console.log(filErrorEm)
-                if(filErrorCon && filErrorEm){
+                if (filErrorCon && filErrorEm) {
                     setIsContact(true)
                     setIsEmploy(true)
                     return
@@ -303,12 +255,12 @@ function EmployeeCreate() {
                     setIsEmploy(true)
                     return
                 }
-                if(filErrorCon){
+                if (filErrorCon) {
                     setIsContact(true)
                     return
                 }
-                
-            } 
+
+            }
         });
     };
 
@@ -374,7 +326,7 @@ function EmployeeCreate() {
                     defaultActiveKey="1"
                     type="card"
                     onChange={handleTabChange}
-                  
+
                 >
                     <TabPane
                         key="1"
@@ -418,8 +370,9 @@ function EmployeeCreate() {
                             setFileListContact={setFileListContact}
                         />
                     </TabPane>
+
                     <TabPane
-                       
+
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Employment Detail
@@ -433,8 +386,9 @@ function EmployeeCreate() {
 
                         />
                     </TabPane>
+
                     <TabPane
-                        
+
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Salary & Wages
@@ -448,7 +402,7 @@ function EmployeeCreate() {
                     </TabPane>
 
                     <TabPane
-                        
+
                         tab={
                             <Button type="link" className="custom-tab-button nomal-btn">
                                 Other

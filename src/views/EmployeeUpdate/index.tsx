@@ -9,8 +9,7 @@ import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import convert from "../../common/convertDate"
-import { Benefit } from "../../component/Other";
-import { EmployE } from '../../module/employee';
+import { Benefit , DataForm } from "../../module/employee";
 import EmployInfomation from "../../component/EmployInfomation";
 import ContactInfomation from "../../component/ContactInfomation";
 import EmployDetail from "../../component/EmployDetail";
@@ -24,51 +23,8 @@ import { toastMessageSuccess, toastMessageError } from '../../common/toastMe';
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
-import "./style.update.scss"
 const cx = classNames.bind(styles);
 const { TabPane } = Tabs;
-
-export interface DataForm {
-    id?: number,
-    staff_id?: string,
-    name: string,
-    mother_name?: string,
-    bank_account_no?: number,
-    bank_name?: string,
-    family_card_number?: number,
-    company_id?: number,
-    gender: number,
-    home_address_1?: string,
-    home_address_2?: string,
-    dob: string,
-    contract_start_date: string,
-    pob?: string,
-    nc_id: number,
-    ktp_no?: number,
-    mobile_no?: number,
-    tel_no?: number,
-    marriage_id?: number,
-    safety_insurance_no?: number,
-    health_insurance_no?: number,
-    department_id?: number,
-    position_id?: number,
-    shift?: string,
-    type: number,
-    entitle_ot?: string,
-    meal_allowance_paid?: string;
-    operational_allowance_paid?: string,
-    attendance_allowance_paid?: string,
-    basic_salary: number,
-    audit_salary: number,
-    safety_insurance: number,
-    health_insurance?: number,
-    meal_allowance: number,
-    grade_id?: number,
-    remark?: string,
-    account_user_id?: number,
-    benefits?: Benefit[],
-}
-
 
 function EmployeeCreateOrUpdate() {
     let initialState: DataForm = {
@@ -156,8 +112,6 @@ function EmployeeCreateOrUpdate() {
     })
 
     const onFinish = async (values: any) => {
-        console.log(values)
-
         values.dob = convert(values.dob)
         values.contract_start_date = convert(values.contract_start_date)
         values.id = id
@@ -205,8 +159,6 @@ function EmployeeCreateOrUpdate() {
         } else {
             values.type = values.type
         }
-
-        console.log(values)
 
         async function handeAddChanges(values: any) {
             let uploadOther
@@ -295,7 +247,6 @@ function EmployeeCreateOrUpdate() {
             initialValues={detailE}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
-
         >
             <div className={cx("head-employ-search")}>
                 <h1>Employee Management</h1>

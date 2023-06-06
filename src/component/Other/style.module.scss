@@ -4,13 +4,21 @@
   label{
     min-width: 180px;
   }
+  .grade-bene{
+    margin-top: 8px;
+    font-size: 1.4rem;
+    margin: 4px;
+    padding: 4px;
+    background-color: var(--back-input);
+    border-radius: 8px;
+
+  }
 }
 
 .box-upload {
   margin: 20px;
   border: 2px solid var(--back-input);
   border-radius: 8px;
-  // padding: 10px;
   .head-upload {
     margin-bottom: 30px;
     display: flex;

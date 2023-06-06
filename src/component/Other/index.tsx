@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react"
-import { useDispatch,  } from 'react-redux';
+import { useDispatch, } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Select, Form, Input, Upload, Table, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -9,6 +9,7 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
+import { BeneGrade } from "../../module/employee";
 import renderCustomLabel from "../CustomLabel/customLabel";
 import { AppState } from '../../service/reducer';
 import { API_PATHS } from '../../config/api';
@@ -24,38 +25,18 @@ const cx = classNames.bind(styles);
 const { Option } = Select;
 const { TextArea } = Input;
 
-export interface Benefit {
-    code?: string,
-    company_id?: number,
-    id?: number,
-    name?: string,
-    type?: number,
-    value?: string
-}
 
-interface Other {
-    benefits?: Benefit[]
-}
-
-interface DataType {
-    key: string;
-    name: string;
-    age: number;
-    address: string;
-    tags: string[];
-
-}
-
-function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionGrade }: any) {
+function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrade }: any) {
     const [optionBenefit, setOptionBenefit] = useState<any>([])
+    const [beneGrade, setBeneGrade] = useState<BeneGrade[]>([]);
     const { t } = useTranslation();
     let todayDate = new Date().toISOString().slice(0, 10);
-    const newLists = fileLists.map((item: any, index: number) => {        
-        if(item.document){
+    const newLists = fileLists.map((item: any, index: number) => {
+        if (item.document) {
             const indexName = Number(item.document.indexOf(item.employee_id)) + `${item.employee_id}`.length + 1
-            
-            return { ...item, index: index , name: item.document.slice(indexName)}
-        }else{
+
+            return { ...item, index: index, name: item.document.slice(indexName) }
+        } else {
             return { ...item, index: index }
         }
     })
@@ -102,17 +83,18 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
             </>
             ),
         },
-    ];
-    const onGenderChangeGrade = (value: string) => {
+    ];  
+    const onGenderChangeGrade = (id: number) => {
         const getGrade = async () => {
-            await dispatch(fetchThunk(`${API_PATHS.grade}/grade?${value}`, "get"));
+            const benefitGrade = await dispatch(fetchThunk(`${API_PATHS.grade}/grade/${id}`, "get"));
+            console.log(benefitGrade);
+            setBeneGrade(benefitGrade.data.benefits)
         }
         getGrade()
     }
 
     const handleSelectChange = (value: string) => {
         console.log(value)
-
     };
 
     const handleBeforeUpload = (file: RcFile, fileList: RcFile[]) => {
@@ -121,9 +103,9 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
     };
     const handeleDeleteFile = (indexs: number) => {
 
-        const fileList = fileLists.filter((item :RcFile, index : number) => index !== indexs);
+        const fileList = fileLists.filter((item: RcFile, index: number) => index !== indexs);
         setFileList(fileList);
-        const findId = fileLists.find((item :RcFile, index : number) => index == indexs);
+        const findId = fileLists.find((item: RcFile, index: number) => index == indexs);
 
         setDeleteId([...deleteId, findId.id])
 
@@ -137,7 +119,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
     useEffect(() => {
         const getGrade = async () => {
             const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
-          
+
             setOptionBenefit(benefit.data)
         }
         getGrade()
@@ -157,22 +139,32 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
                 <Form.Item
                     name="grade_id"
                     label={renderCustomLabel(t("Grade"))}
-                
                 >
-
                     <Select
                         size="large"
                         placeholder="Select a option "
+                        // allowClear
                         onChange={onGenderChangeGrade}
-
                     >
-                        {optionGrade.map((option: any) => (
+                        {optionGrade.map((option: BeneGrade) => (
                             <Option key={option.id} value={option.id}>
                                 {option.name}
                             </Option>
                         ))}
                     </Select>
+                    {beneGrade
+                        ? beneGrade.map((value: BeneGrade) => {
+                            return <small
+                                key={value.name}
+                                className={cx("grade-bene")}>
+                                {value.name}
+                            </small>
+
+                        }
+                        )
+                        : <></>}
                 </Form.Item>
+
 
                 <Form.Item
                     name="benefits"
@@ -193,8 +185,8 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
 
                 <Form.Item
                     label={renderCustomLabel(t("Remark"))}
-                    
-                    >
+
+                >
 
                     <TextArea
                         placeholder=" "
@@ -205,7 +197,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
                 <Form.Item
                     // name="HRM User Account"
                     label={renderCustomLabel(t("HRM User Account"))}
-                    >
+                >
                     <Select
                         size="large"
                         placeholder="HRM User Account"
@@ -214,8 +206,7 @@ function EmployOther({ fileLists , setFileList ,deleteId , setDeleteId , optionG
                         disabled
                     >
                         <Option value="male">male</Option>
-                        <Option value="female">female</Option>
-                        <Option value="other">other</Option>
+
                     </Select>
                 </Form.Item>
             </div>

@@ -7,6 +7,7 @@ import { Action } from 'redux';
 import { Button, Select, Form, Input } from 'antd';
 import Cookies from 'js-cookie';
 
+import { FormValues } from '../../module/login';
 import { ACCESS_TOKEN_KEY } from '../../utils/constants';
 import { setAuthorization, setUserInfo, logout } from "../../service/redux/auth.login"
 import { AppState } from '../../service/reducer';
@@ -18,23 +19,14 @@ import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
-interface FormValues {
-    username: string;
-    password: string;
-}
-
 function Login() {
-    const userD = useSelector((state: any) => state.authReduce)
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
     const [inputValue, setValue] = useState<FormValues>({ username: '', password: '' });
-    const [, forceUpdate] = useState({});
+    // const [, forceUpdate] = useState({});
     const [searchParams] = useSearchParams({ 'auth/sign-in': '' });
     const { t } = useTranslation();
     let navigate = useNavigate()
 
-    useEffect(() => {
-        forceUpdate({});
-    }, [])
 
 
     const onFinish = (values: any) => {
@@ -55,14 +47,10 @@ function Login() {
                     username: userDetails.data.username,
                     email: userDetails.data.email,
                 });
-                // console.log(userJSON);
                 localStorage.setItem("auth", userJSON)
                 dispatch(setUserInfo(userDetails.data));
-                // const employee =  await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${userDetails.data.id}`, "get"));
-                // console.log(employee)
                 navigate("/employee")
             }
-            // console.log(json)
         }
         values.company_id = Number(values.company_id)
         singIn(values)
@@ -86,7 +74,6 @@ function Login() {
                 name="normal_login"
                 layout="vertical"
                 className={cx("login-form")}
-                // initialValues={{ remember: true }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
 

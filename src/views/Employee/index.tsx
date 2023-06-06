@@ -1,6 +1,5 @@
 import { useState, useEffect, Key, useCallback } from "react"
 import { NavLink, Link, useNavigate, useSearchParams } from "react-router-dom";
-import { debounce } from 'lodash';
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +8,6 @@ import SimpleBar from 'simplebar-react';
 import 'simplebar-react/dist/simplebar.min.css';
 
 import useDeboune from '../../common/hookDeboune'
-import { Rowid } from "../../component/EmployBtn";
 import EmployBtn from "../../component/EmployBtn"
 import TableData from "../../component/TableList";
 import { addEmployeeDocment } from "../../service/redux/employee.document"
@@ -17,18 +15,12 @@ import { EmployE } from "../../module/employee";
 import { AppState } from '../../service/reducer';
 import { API_PATHS } from '../../config/api';
 import { fetchThunk } from '../../common/thunk';
-import Loading from "../../component/Loading"
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
 import PaginationPage from "../../component/Pagination";
 const cx = classNames.bind(styles);
 
-interface userD {
-    id: number,
-    username: string,
-    email: string,
-}
 
 function Employee() {
 
@@ -74,8 +66,6 @@ function Employee() {
             const search = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}?search=${encodeURIComponent(debounces)}`, "get"));
             dispatch(addEmployeeDocment(search.data.data))
             setPage(search.data)
-
-            console.log(search)
 
         }
 

@@ -7,7 +7,7 @@ import type { ColumnsType } from 'antd/es/table';
 import { addEmployeeDocment } from "../../service/redux/employee.document"
 import { EmployE } from "../../module/employee";
 import { AppState } from '../../service/reducer';
-
+import { PropTable } from "../../module/employee";
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
@@ -158,14 +158,6 @@ const columns: ColumnsType<EmployE> = [
 
 ];
 
-
-export interface PropTable {
-    selectedRowKeys: number[],
-    setSelectedRowKeys: any,
-    selectedRows: EmployE[],
-    setSelectedRows: any,
-    loading: boolean
-}
 
 function TableData(props: PropTable) {
     const { selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows , loading } = props;

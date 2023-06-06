@@ -15,7 +15,6 @@ import styles from "./style.module.scss";
 const cx = classNames.bind(styles);
 
 function ForgotPass() {
-    const [form] = Form.useForm()
     const [, forceUpdate] = useState({});
     let navigate = useNavigate()
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
@@ -36,7 +35,6 @@ function ForgotPass() {
 
             }
         }
-
         handleFogotPass()
     };
 
