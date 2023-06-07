@@ -5,7 +5,7 @@ import { Select, Form, Input, Upload, Table, Space } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { RcFile, } from 'antd/lib/upload';
 import type { ColumnsType } from 'antd/es/table';
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineVerticalAlignBottom } from "react-icons/ai";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
@@ -26,8 +26,9 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 
-function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrade }: any) {
-    const [optionBenefit, setOptionBenefit] = useState<any>([])
+function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrade, optionBenefit }: any) {
+    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
+    // const [optionBenefit, setOptionBenefit] = useState<any>([])
     const [beneGrade, setBeneGrade] = useState<BeneGrade[]>([]);
     const { t } = useTranslation();
     let todayDate = new Date().toISOString().slice(0, 10);
@@ -41,7 +42,6 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
         }
     })
 
-    const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
     const columns: ColumnsType<object> = [
         {
@@ -73,17 +73,20 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
             dataIndex: 'address',
             key: 'type',
             width: 500,
-            render: (_, record, index) => (<>
+            render: (_, record: any, index: number) => (<div className={cx("show-and-delete")}>
+                {record.document && <a href={record.document} target="_blank" className={cx("show-item")}>
+                    <p>
+                        {record.name}
+                    </p>
+                    <AiOutlineVerticalAlignBottom className={cx("icon-show")} />
+                </a>}
 
-                <Space size="middle">
+                <AiOutlineDelete onClick={() => handeleDeleteFile(index)} className={cx("delete-file")} />
 
-                    <AiOutlineDelete onClick={() => handeleDeleteFile(index)} className={cx("delete-file")} />
-                </Space>
-
-            </>
+            </div>
             ),
         },
-    ];  
+    ];
     const onGenderChangeGrade = (id: number) => {
         const getGrade = async () => {
             const benefitGrade = await dispatch(fetchThunk(`${API_PATHS.grade}/grade/${id}`, "get"));
@@ -92,6 +95,15 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
         }
         getGrade()
     }
+    let newBenes
+    if (beneGrade.length > 0) {
+        newBenes = optionBenefit.filter((bene: any) => {
+            let checkBene = beneGrade.some((beneGrade) => beneGrade.id == bene.id)
+            return !checkBene
+        })
+
+    }
+    console.log(newBenes)
 
     const handleSelectChange = (value: string) => {
         console.log(value)
@@ -115,16 +127,6 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
         setFileList([...fileList]);
     };
 
-
-    useEffect(() => {
-        const getGrade = async () => {
-            const benefit = await dispatch(fetchThunk(`${API_PATHS.grade}/benefit`, "get"));
-
-            setOptionBenefit(benefit.data)
-        }
-        getGrade()
-
-    }, [])
     return (<div className={cx("employ-other")}>
 
         <div className={cx("head-infomation")}>
@@ -153,15 +155,21 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
                         ))}
                     </Select>
                     {beneGrade
-                        ? beneGrade.map((value: BeneGrade) => {
-                            return <small
-                                key={value.name}
-                                className={cx("grade-bene")}>
-                                {value.name}
-                            </small>
+                        ? <p className={cx("render-bene")}>
 
-                        }
-                        )
+                            {
+
+                                beneGrade.map((value: BeneGrade) => {
+                                    return <span
+                                        key={value.name}
+                                        className={cx("grade-bene")}>
+                                        {value.name}
+                                    </span>
+                                })
+                            }
+
+                        </p>
+
                         : <></>}
                 </Form.Item>
 
@@ -175,9 +183,13 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
                         mode="multiple"
                         allowClear
                         onChange={handleSelectChange}
-                        options={optionBenefit.map((item: any) => (
+                        options={beneGrade.length > 0 ? newBenes.map((item: any) => (
                             { value: item.name, id: item.id }
-                        ))}
+                        )) : optionBenefit.map((item: any) => (
+                            { value: item.name, id: item.id }
+                        ))
+
+                        }
                     >
 
                     </Select>
@@ -252,7 +264,7 @@ function EmployOther({ fileLists, setFileList, deleteId, setDeleteId, optionGrad
             </div>
 
         </div>
-    </div>);
+    </div >);
 }
 
 export default EmployOther;

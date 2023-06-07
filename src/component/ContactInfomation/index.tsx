@@ -2,10 +2,10 @@ import { useCallback, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Button, Space, Select, Form, Input, DatePicker, Upload, Table } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
-import { AiOutlineDelete } from "react-icons/ai";
+import { AiOutlineDelete, AiOutlineVerticalAlignBottom } from "react-icons/ai";
 import { useTranslation } from 'react-i18next';
 import { RcFile, UploadChangeParam } from 'antd/lib/upload';
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, } from '@ant-design/icons';
 
 import renderCustomLabel from "../CustomLabel/customLabel"
 import convert from "../../common/convertDate"
@@ -35,36 +35,48 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
     const [ischeckFile, setCheckFile] = useState<Boolean>(false)
 
     const newLists = fileListContact.map((item: any, index: number) => {
-        return { ...item, index: index }
+        if (item.document) {
+            const indexName = Number(item.document.indexOf(item.employee_id)) + `${item.employee_id}`.length + 1
+
+            return { ...item, index: index, name_document: item.document.slice(indexName) }
+        } else {
+            return { ...item, index: index }
+        }
     })
     const columns = [
         {
             title: 'No',
             dataIndex: 'index',
+            width: 50,
             key: 'index',
         },
         {
             title: 'Contract Name',
             dataIndex: 'name',
+            width: 200,
             key: 'name',
         },
         {
             title: 'Sign Date',
             dataIndex: 'contract_date',
+            width: 200,
             key: 'contract_date',
         },
         {
             title: 'Action',
             // dataIndex: '',
             key: 'fileList',
-            render: (_: any, record: any, index: number) => (<>
+            render: (_: any, record: any, index: number) => (<div className={cx("show-and-delete")}>
+                {record.document && <a href={record.document} target="_blank" className={cx("show-item")}>
+                    <p>
+                        {record.name_document}
+                    </p>
+                    <AiOutlineVerticalAlignBottom className={cx("icon-show")} />
+                </a>}
 
-                <Space size="middle">
+                <AiOutlineDelete onClick={() => handeleDeleteFile(index)} className={cx("delete-file")} />
 
-                    <AiOutlineDelete onClick={() => handeleDeleteFile(index)} className={cx("delete-file")} />
-                </Space>
-
-            </>
+            </div>
             ),
         },
     ];
@@ -124,7 +136,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                 <Form.Item
                     name="contract_start_date"
                     className={cx("label-custom")}
-                    label={renderCustomLabel(t("Date Start"))}
+                    label={renderCustomLabel(t("Date Start"), true)}
                     rules={[{
                         required: true,
                         message: 'Please select date time'
@@ -142,7 +154,7 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                 <Form.Item
                     name="type"
                     className={cx("label-custom")}
-                    label={renderCustomLabel(t("Employee Type"))}
+                    label={renderCustomLabel(t("Employee Type"), true)}
                     rules={[{
                         required: true,
                         message: 'Please select an option'

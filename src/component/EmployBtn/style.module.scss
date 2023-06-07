@@ -1,7 +1,7 @@
 .btn-add-remove {
   display: flex;
   justify-content: flex-end;
-
+  margin-bottom: 10px;
   .btn {
     font-size: 1.6em;
     padding: 8px 12px;
@@ -20,9 +20,23 @@
   .btn-add {
     background-color: rgb(237, 246, 255);
   }
+
+  // nomal delete
   .btn-delete {
-    background-color: #ffefef;
-    color: var(--delete-btn)
+    background-color: var(--btn-delete);
+    color: var(--color-td)
+  }
+  .icon-delete{
+    color: var(--color-td);
+  }
+
+  // warning delete
+  .warning-delete{
+    background-color: rgb(255, 239, 239);
+    color: var(--delete-btn);
+  }
+  .delete-nomal{
+    color: var(--delete-btn);
   }
   .btn-add-employ {
     margin: 0 10px;

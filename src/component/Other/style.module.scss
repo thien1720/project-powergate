@@ -1,17 +1,47 @@
+.employ-other {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+}
+.show-and-delete{
+  display: flex;
+  align-items: center;
+}
+.show-item{
+  display: flex;
+  align-items: center;
+  background-color: rgb(233, 249, 238);
+  color: var(--show-icon);
+  padding: 0 4px;
+  margin-right: 20px;
+  border-radius: 8px;
+  p{
+    white-space: nowrap;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .icon-show{
+    font-size: 1.6rem;
+  }
+}
 .form-other {
   padding: 20px;
   max-width: 520px;
-  label{
+  label {
     min-width: 180px;
   }
-  .grade-bene{
+  .render-bene{
     margin-top: 8px;
+    // display: flex;
+  }
+  .grade-bene {
+    
     font-size: 1.4rem;
     margin: 4px;
     padding: 4px;
     background-color: var(--back-input);
     border-radius: 8px;
-
   }
 }
 
@@ -20,12 +50,15 @@
   border: 2px solid var(--back-input);
   border-radius: 8px;
   .head-upload {
+    margin-left: 8px;
     margin-bottom: 30px;
     display: flex;
     align-items: center;
     // justify-content: center;
     // width: 500px;
     .btn-upload-doc {
+      display: flex;
+      align-items: center;
       margin-top: 10px;
       border: 1px dashed var(--gener-ral);
       padding: 2px 8px;
@@ -72,13 +105,13 @@
   }
 }
 
-.delete-file{
+.delete-file {
   color: var(--delete-btn);
   font-size: 2rem;
   text-align: right;
   // padding: 4px 8px;
   border-radius: 8px;
   background-color: var(--upload-img);
-  
+
   cursor: pointer;
 }

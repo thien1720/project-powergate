@@ -1,6 +1,11 @@
+.salary-wages {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 10px;
+}
 .list-salary {
   margin: 0 30px;
-
+  padding: 10px;
   .input-values {
     flex: 1;
   }
@@ -40,11 +45,9 @@
       color: var(--delete-btn);
       font-size: 1.4rem;
     }
-    
   }
-  .input-values{
+  .input-values {
     width: 100%;
     // background-color: #333;
   }
-
 }

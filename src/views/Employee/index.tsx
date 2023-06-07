@@ -29,7 +29,7 @@ function Employee() {
     const [selectedRowKeys, setSelectedRowKeys] = useState<number[]>([]);
     const [searchParams, setSearchParams] = useSearchParams();
     const [loading, setLoading] = useState(false);
-
+    const [pageItem, setPageItem] = useState<string>('')
     const [selectedRows, setSelectedRows] = useState<EmployE[]>([]);
     const [page, setPage] = useState({})
     const userJSON: string = localStorage.getItem('auth') || "";
@@ -49,7 +49,7 @@ function Employee() {
     };
     const getEmployee = async () => {
         setLoading(true)
-        const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
+        const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}`, "get"));
         dispatch(addEmployeeDocment(employee.data.data))
         setPage(employee.data)
         setLoading(false)
@@ -73,9 +73,9 @@ function Employee() {
 
     }, [debounces])
 
-    useEffect(() => {
-        getEmployee()
-    }, [])
+    // useEffect(() => {
+    //     getEmployee()
+    // }, [])
     return <div className={cx("employee-page")}>
         <div className={cx("map-page")}>
             <Link to="/">General</Link>
@@ -93,26 +93,25 @@ function Employee() {
             </div>
         </div>
         <div className={cx("show-list")}>
-            <EmployBtn deleteEm={selectedRowKeys} setSelectedRowKeys={setSelectedRowKeys}/>
+            <EmployBtn
+                deleteEm={selectedRowKeys}
+                setSelectedRowKeys={setSelectedRowKeys}
+                setPage={setPage}
+                pageItem={pageItem}
+            />
+            <TableData
+                selectedRowKeys={selectedRowKeys}
+                setSelectedRowKeys={setSelectedRowKeys}
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}
+                loading={loading}
 
-            <SimpleBar
-                style={{ maxHeight: 500 }}
-            >
-
-                <div className={cx("show-list-employee")}>
-                    <TableData
-                        selectedRowKeys={selectedRowKeys}
-                        setSelectedRowKeys={setSelectedRowKeys}
-                        selectedRows={selectedRows}
-                        setSelectedRows={setSelectedRows}
-                        loading={loading}
-                    />
-                </div>
-            </SimpleBar>
+            />
             <PaginationPage
                 pagiNation={page}
                 setPage={setPage}
                 setLoading={setLoading}
+                setPageItem={setPageItem}
             />
         </div>
     </div>

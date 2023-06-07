@@ -3,6 +3,7 @@ import { ThunkDispatch } from 'redux-thunk';
 import { useDispatch, useSelector } from 'react-redux';
 import { Action } from 'redux';
 import { Button, Space, Modal } from 'antd';
+import { AiOutlineDelete } from "react-icons/ai";
 
 import { addEmployeeDocment } from "../../service/redux/employee.document"
 import { AppState } from '../../service/reducer';
@@ -18,10 +19,12 @@ export interface Rowid {
 }
 export interface AddOrDelete {
     deleteEm: number[], 
-    setSelectedRowKeys: any
+    setSelectedRowKeys: any,
+    setPage: any,
+    pageItem : any,
 }
 
-function EmployBtn({ deleteEm , setSelectedRowKeys}: AddOrDelete) {
+function EmployBtn({ deleteEm , setSelectedRowKeys , setPage , pageItem}: AddOrDelete) {
     const newDelete = { record_ids: deleteEm }
     const checkRowDelete = deleteEm.length > 0 ? false : true
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -37,9 +40,11 @@ function EmployBtn({ deleteEm , setSelectedRowKeys}: AddOrDelete) {
         setIsModalOpen(false);
         const deleteE = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/multiple-delete?record_ids`, "delete", newDelete));
         if (deleteE.result) {
-            const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}`, "get"));
+            // const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}`, "get"));
+        const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}?page=${pageItem}`))
+
             dispatch(addEmployeeDocment(employee.data.data))
-            // setPage(employee.data)
+            setPage(employee.data)
             setSelectedRowKeys([])
         }
         console.log(deleteE)
@@ -79,10 +84,10 @@ function EmployBtn({ deleteEm , setSelectedRowKeys}: AddOrDelete) {
         <div className={cx("btn-add-employ")}>
             <button
                 disabled={checkRowDelete}
-                className={cx("btn" , checkRowDelete ? "btn-delete" : "")}
+                className={cx("btn" , checkRowDelete ? "btn-delete" : "warning-delete")}
                 onClick={showModal}
             >
-                <img src="/image/delete-btn.svg" alt="delete-btn" />
+                <AiOutlineDelete className={cx(checkRowDelete ? "icon-delete" : "delete-nomal")} />
                 Delete
             </button>
         </div>

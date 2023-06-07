@@ -1,8 +1,10 @@
-import { useState, useEffect, Key } from "react"
+import { useState, useEffect, Key , useRef} from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Table, } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import SimpleBar from 'simplebar-react';
+import 'simplebar-react/dist/simplebar.min.css';
 
 import { addEmployeeDocment } from "../../service/redux/employee.document"
 import { EmployE } from "../../module/employee";
@@ -11,18 +13,20 @@ import { PropTable } from "../../module/employee";
 
 import classNames from "classnames/bind"
 import styles from "./style.module.scss";
+import "./style.scss"
 const cx = classNames.bind(styles);
 
 const columns: ColumnsType<EmployE> = [
     {
         title: 'NIK',
         dataIndex: 'staff_id',
-        className :cx("staff-id")
+        width: 100,
     },
     {
         title: 'Name',
         dataIndex: 'name',
-        className : cx("name")
+        width: 100,
+
     },
     {
         title: 'Gender',
@@ -31,127 +35,137 @@ const columns: ColumnsType<EmployE> = [
             {record.gender == 0 && "Male"}
             {record.gender == 1 && "Female"}
         </>),
+        width: 80,
+
     },
     {
         title: 'Bank Card No.',
         dataIndex: 'bank_name',
-        className: cx("bank-card"),
+        width: 150,
 
     },
     {
         title: 'Bank Account No.',
         dataIndex: 'bank_account_no',
-        className : cx("bank-account")
+        width: 150,
+
     },
     {
         title: 'Family Card No.',
         dataIndex: 'family_card_number',
-        className : cx('family-card')
+        width: 150,
+
     },
     {
         title: 'Marriage Status',
         dataIndex: 'marriage_id',
-        className : cx("marriage")
+        width: 150,
+
     },
     {
         title: 'Mother Name',
         dataIndex: 'mother_name',
-        className : cx('mother-name')
+        width: 150,
     },
     {
         title: 'Place of birth',
         dataIndex: 'pob',
-        className :cx("date")
+        width: 150,
 
     },
     {
         title: 'Home Address_1',
         dataIndex: 'home_address_1',
-        className : cx("home")
-            
+        width: 150,
+
     },
     {
         title: 'Home Address_2',
         dataIndex: 'home_address_2',
-        className : cx("home")
-        
+        width: 150,
+
     },
     {
         title: 'Date of birth',
         dataIndex: 'dob',
-        className :cx("date")
+        width: 150,
 
     },
     {
         title: 'National Card ID No.',
         dataIndex: 'nc_id',
-        className : cx("national-card")
+        width: 150,
+
     },
     {
         title: 'Date Start',
         dataIndex: 'contract_start_date',
-        className :cx("date")
+        width: 150,
     },
     {
         title: 'First Contract',
-        dataIndex: '',
-        className : cx("contract")
+        // dataIndex: '',
+        width: 150,
+
     },
     {
         title: 'Second Contract',
-        dataIndex: '',
-        className : cx("contract")
+        // dataIndex: '',
+        width: 150,
     },
     {
         title: 'End Contract',
-        dataIndex: '',
-        className : cx("contract")
+        // dataIndex: '',
+        width: 150,
     },
     {
         title: 'Department',
         dataIndex: 'department_id',
-        className : cx("footer-table")
+        width: 150,
 
     },
     {
         title: 'Employee Type',
-        dataIndex: '',
-        className : cx("employee-type")
+        // dataIndex: '',
+        width: 150,
     },
     {
         title: 'Salary Rp.',
-        dataIndex: '',
-        className : cx("footer-table")
+        // dataIndex: '',
+        width: 150,
 
     },
     {
         title: 'Position',
         dataIndex: 'position_id',
-        className : cx("footer-table")
+        width: 150,
+
 
     },
     {
         title: 'O/T Paid',
         dataIndex: 'home_address_1',
-        className : cx("footer-table")
+        width: 150,
 
     },
     {
         title: 'Meal paid',
         dataIndex: 'meal_allowance_paid',
-        className : cx("footer-table")
+        width: 150,
+
 
     },
     {
         title: 'Meal Rp.',
         dataIndex: 'meal_allowance',
-        className : cx("footer-table")
+        width: 150,
+        
 
     },
     {
         title: 'Grading',
         dataIndex: 'grade_id',
-        className : cx("footer-table")
+        width: 150,
 
     }
 
@@ -160,13 +174,11 @@ const columns: ColumnsType<EmployE> = [
 
 
 function TableData(props: PropTable) {
-    const { selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows , loading } = props;
+    const { selectedRowKeys, setSelectedRowKeys, selectedRows, setSelectedRows, loading } = props;
     let navigate = useNavigate()
     const employData = useSelector((state: AppState) => { return state.employeeReducer.data })
 
     const handleRowClick = (record: EmployE) => {
-        // Kiểm tra và thay đổi trạng thái của input
-        // Chỉ định hàng đã được chọn
         setSelectedRowKeys([...selectedRowKeys, record.id]);
         setSelectedRows([...selectedRows, record]);
     };
@@ -181,23 +193,33 @@ function TableData(props: PropTable) {
             setSelectedRows(rows);
         },
     };
+    const tableRef = useRef<any>();
 
+
+  useEffect(() => {
+    if (tableRef.current) {
+      tableRef.current.recalculate();
+    }
+  }, [employData]);
     return (<div className={cx("box-table")}>
-        <Table
-            rowKey="id"
-            rowSelection={
-                rowSelection
-            }
-            onRow={(record) => ({
-                onClick: () => handleRowClick(record),
-                onDoubleClick: () => handleRowDoubleClick(record),
-            })}
-            dataSource={employData}
-            columns={columns}
-            pagination={false}
-            loading = {loading}
-            className={cx("table-data")}
-        />
+            <Table
+                // ref={tableRef}
+                rowKey="id"
+                rowSelection={
+                    rowSelection
+                }
+                onRow={(record) => ({
+                    onClick: () => handleRowClick(record),
+                    onDoubleClick: () => handleRowDoubleClick(record),
+                })}
+                dataSource={employData}
+                columns={columns}
+                pagination={false}
+                loading={loading}
+                className={cx("table-data")}
+                scroll={{ x: 1000, y: 500 }}
+            />
+
     </div>);
 }
 

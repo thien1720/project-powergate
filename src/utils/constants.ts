@@ -4,5 +4,3 @@ export const APIHost = development ? '/api/v1' : 'https://google.com';
 export const APIUrl = development ? process.env.REACT_APP_API_URL : 'https://google.com';
 
 export const ACCESS_TOKEN_KEY = 'token';
-
-// console.log(APIHost)

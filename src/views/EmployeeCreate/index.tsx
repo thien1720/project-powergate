@@ -65,7 +65,6 @@ function EmployeeCreate() {
 
     // form contact info
     const formContactInfo = new FormData();
-    // formContactInfo.append('employee_id', String(id));
     fileListContact.forEach((contact: any) => {
 
         if (contact.fileList) {
@@ -154,15 +153,23 @@ function EmployeeCreate() {
     };
 
     const handleTabChange = (activeKey: string) => {
-        // setActiveTab(activeKey);
-        // console.log(activeKey)
         formRef.current?.validateFields().then((values) => {
             setIsEmploy(false)
             setIsContact(false)
-            setIsAdd(false)
+            if(values.contract_start_date &&
+                 values.type !== undefined && 
+                 values.name && 
+                 values.nc_id && 
+                 values.ktp_no && 
+                 values.gender !== undefined && 
+                 values.dob)
+            {
+                setIsAdd(false)
+            }
+            console.log(values)
             // Do something when the form is valid
         }).catch((error: any) => {
-            // console.log(error)
+            console.log(error)
             const filErrorCon = error.errorFields.some((err: any) => {
                 return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
             })
@@ -178,6 +185,7 @@ function EmployeeCreate() {
             // check Employee
             if (error.errorFields && activeKey == "2" && filErrorEm) {
                 // console.log("contract")
+                setIsAdd(true)
                 setIsEmploy(true)
                 if (filErrorCon) {
                     // setIsEmploy(false)
@@ -192,7 +200,7 @@ function EmployeeCreate() {
             // check contact
             if (error.errorFields && activeKey == "1" && filErrorCon) {
                 // console.log("employContact")
-
+                setIsAdd(true)
                 setIsContact(true)
                 if (filErrorEm) {
                     setIsEmploy(true)
@@ -335,7 +343,7 @@ function EmployeeCreate() {
                                 type="link"
                                 className={isEmploy ? "custom-tab-button warning-text" : "custom-tab-button nomal-btn"}
                             >
-                                Employyee Infomation
+                                Employee Infomation
                                 {isEmploy
                                     ? <FiAlertOctagon
                                         className={cx("warning-infomation")}
@@ -416,6 +424,7 @@ function EmployeeCreate() {
                             setDeleteId={setDeleteId}
                             setFileList={setFileList}
                             optionGrade={optionGrade}
+                            optionBenefit = {optionBenefit}
                         />
                     </TabPane>
                 </Tabs>

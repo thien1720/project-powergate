@@ -68,3 +68,12 @@
 .warning-text{
   padding: 14px 34px !important;
 }
+
+.ant-table-thead {
+  position: sticky; /* Cố định header khi cuộn */
+  top: 0; /* Đặt vị trí cố định ở đầu trang */
+
+  th {
+    background-color: #f5f5f5; /* Tùy chỉnh màu nền của header */
+  }
+}

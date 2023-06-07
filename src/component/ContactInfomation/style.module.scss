@@ -1,4 +1,29 @@
 .contact-infomation {
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 8px;
+  .show-and-delete{
+    display: flex;
+    align-items: center;
+  }
+  .show-item{
+    display: flex;
+    align-items: center;
+    background-color: rgb(233, 249, 238);
+    color: var(--show-icon);
+    padding: 0 4px;
+    margin-right: 20px;
+    border-radius: 8px;
+    p{
+      white-space: nowrap;
+      width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .icon-show{
+      font-size: 1.6rem;
+    }
+  }
   .style-datepick {
     width: 100%;
   }
@@ -28,11 +53,10 @@
         width: 100%;
         margin-bottom: 10px;
       }
-      span{
+      span {
         display: block;
         padding: 4px 10px;
         margin-bottom: 10px;
-        
       }
     }
   }
@@ -48,6 +72,8 @@
       // padding: 10px;
     }
     .btn-upload-img {
+      display: flex;
+      align-items: center;
       border: 2px dotted var(--gener-ral);
       border-radius: 8px;
       padding: 14px 30px;
@@ -56,10 +82,9 @@
       font-size: 1.6rem;
       height: 100%;
       color: var(--gener-ral);
-      
     }
     .btn-color-add {
-      border: 2px solid ;
+      border: 2px solid;
       min-width: 19.5rem;
       text-align: center;
       height: 100%;
@@ -100,22 +125,21 @@
   }
 }
 
-
-.delete-file{
+.delete-file {
   color: var(--delete-btn);
   font-size: 2rem;
   text-align: right;
   // padding: 4px 8px;
   border-radius: 8px;
   background-color: var(--upload-img);
-  
+
   cursor: pointer;
 }
 
-.warning{
+.warning {
   border: 1px solid red;
 }
-.warning-text{
+.warning-text {
   color: red;
   font-weight: 400;
 }

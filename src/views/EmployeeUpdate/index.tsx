@@ -1,15 +1,16 @@
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef } from "react"
 import { NavLink, Link, useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from "dayjs";
 import { Tabs, Button, Form, Input } from 'antd';
 import type { UploadFile, UploadProps } from 'antd/es/upload/interface';
-
+import { FormInstance } from 'antd/lib/form';
+import { FiAlertOctagon } from "react-icons/fi";
 import { Action } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 
 import convert from "../../common/convertDate"
-import { Benefit , DataForm } from "../../module/employee";
+import { Benefit, DataForm } from "../../module/employee";
 import EmployInfomation from "../../component/EmployInfomation";
 import ContactInfomation from "../../component/ContactInfomation";
 import EmployDetail from "../../component/EmployDetail";
@@ -66,11 +67,15 @@ function EmployeeCreateOrUpdate() {
         account_user_id: 0,
         benefits: [],
     };
+    const formRef = useRef<FormInstance>(null);
     const [form] = Form.useForm();
     let { id } = useParams()
     let navigate = useNavigate()
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
 
+    const [isSave, setIsSave] = useState(false)
+    const [isEmploy, setIsEmploy] = useState(false)
+    const [isContact, setIsContact] = useState(false)
     const [detailE, setDetailE] = useState<DataForm>(initialState)
     const [optionBenefit, setOptionBenefit] = useState<any>([])
     const [optionPosition, setOptionPosition] = useState<any>([])
@@ -81,6 +86,7 @@ function EmployeeCreateOrUpdate() {
     const [deleteId, setDeleteId] = useState<[]>([])
     const [fileListContact, setFileListContact] = useState<any>([])
 
+    console.log(detailE)
     // form orther
     const formData = new FormData();
     formData.append('employee_id', String(id));
@@ -112,8 +118,9 @@ function EmployeeCreateOrUpdate() {
     })
 
     const onFinish = async (values: any) => {
+        console.log(values)
         values.dob = convert(values.dob)
-        values.contract_start_date = convert(values.contract_start_date)
+        // values.contract_start_date = convert(values.contract_start_date)
         values.id = id
         if (values.benefits) {
             const newBenefits = values.benefits.map((bene: string) => {
@@ -149,16 +156,17 @@ function EmployeeCreateOrUpdate() {
         } else {
             values.meal_allowance = values.meal_allowance
         }
-        // if (!values.contract_start_date) {
-        //     // values.contract_start_date = detailE.contract_start_date
-        // } else {
-        // values.contract_start_date = convert(detailE.contract_start_date)
-        // }
         if (!values.type) {
             values.type = detailE.type
         } else {
             values.type = values.type
         }
+        if (!values.contract_start_date) {
+            values.contract_start_date = convert(detailE.contract_start_date)
+        }else{
+            values.contract_start_date = convert(values.contract_start_date)
+        }
+
 
         async function handeAddChanges(values: any) {
             let uploadOther
@@ -180,7 +188,6 @@ function EmployeeCreateOrUpdate() {
                     "multipart/form-data")
                 )
             }
-            console.log(uploadContact)
             if (json.result) {
                 toastMessageSuccess("Update Success")
             } else {
@@ -197,6 +204,131 @@ function EmployeeCreateOrUpdate() {
         console.log('Failed:', errorInfo);
     };
 
+    const handleTabChange = (activeKey: string) => {
+        formRef.current?.validateFields().then((values) => {
+            console.log(values)
+            setIsEmploy(false)
+            setIsContact(false)
+            if (values.contract_start_date &&
+                values.type !== undefined &&
+                values.name &&
+                values.nc_id &&
+                values.ktp_no &&
+                values.gender !== undefined &&
+                values.dob
+            ) {
+                console.log("save")
+                setIsSave(false)
+            }
+            // else {
+            //     console.log("kdfjd")
+            //     setIsSave(true)
+            // }
+            // Do something when the form is valid
+        }).catch((error: any) => {
+            // console.log(error)
+            const filErrorCon = error.errorFields.some((err: any) => {
+                return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
+            })
+
+            const filErrorEm = error.errorFields.some((err: any) => {
+                return err.name.toString() === "name"
+                    || err.name.toString() === "gender"
+                    || err.name.toString() === "nc_id"
+                    || err.name.toString() === "ktp_no"
+                    || err.name.toString() === "nc_id"
+            })
+
+            // check Employee
+            if (error.errorFields && activeKey == "2" && filErrorEm) {
+                setIsEmploy(true)
+                setIsSave(true)
+                if (filErrorCon) {
+
+                    console.log("contactset")
+                    setIsContact(true)
+                    return
+                }
+            } else if (filErrorCon) {
+                setIsEmploy(false)
+                // setIsAdd(true)
+
+            }
+
+            // check contact
+            if (error.errorFields && activeKey == "1" && filErrorCon) {
+                // console.log("employContact")
+                setIsSave(true)
+                setIsContact(true)
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+            } else if (filErrorEm) {
+                setIsContact(false)
+                // setIsAdd(true)
+
+            }
+
+            // check Employee Detail
+            if (error.errorFields && activeKey === "3") {
+                // console.log(filErrorEm)
+                if (filErrorCon && filErrorEm) {
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorCon) {
+                    setIsContact(true)
+                    return
+                }
+
+            }
+            // check Salary
+            if (error.errorFields && activeKey == "4") {
+                // console.log(filErrorEm)
+                if (filErrorCon && filErrorEm) {
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorCon) {
+                    setIsContact(true)
+                    return
+
+                }
+
+            }
+
+            // check other
+            if (error.errorFields && activeKey == "5") {
+                // console.log(filErrorEm)
+                if (filErrorCon && filErrorEm) {
+                    setIsContact(true)
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorEm) {
+                    setIsEmploy(true)
+                    return
+                }
+                if (filErrorCon) {
+                    setIsContact(true)
+                    return
+                }
+
+            }
+        });
+    };
 
     useEffect(() => {
         const getEmployee = async () => {
@@ -209,9 +341,16 @@ function EmployeeCreateOrUpdate() {
             const departMement = await dispatch(fetchThunk(`${API_PATHS.grade}/department`, "get"));
 
             employee.data.dob = dayjs(new Date(employee.data.dob))
+            const dateString = employee.data.contract_start_date;
+            const dateParts = dateString.split("-");
+            const year = parseInt(dateParts[0], 10);
+            const month = parseInt(dateParts[1], 10) - 1; // Trừ 1 vì tháng trong JavaScript bắt đầu từ 0
+            const day = parseInt(dateParts[2], 10);
             employee.data.contract_start_date = dayjs(new Date(employee.data.contract_start_date))
+            // dayjs(new Date(employee.data.contract_start_date))
             employee.data.benefits = employee.data?.benefits.map((item: Benefit) => item.name)
             employee.data.type = Number(employee.data.type)
+            console.log(employee.data.contract_start_date)
 
             setDetailE(employee.data)
             setFileList(employee.data.documents)
@@ -242,6 +381,7 @@ function EmployeeCreateOrUpdate() {
         </div>
         <Form
             form={form}
+            ref={formRef}
             layout="horizontal"
             className={cx("box-employ-info")}
             initialValues={detailE}
@@ -254,6 +394,7 @@ function EmployeeCreateOrUpdate() {
                     {/* <button className={cx("btn")} onClick={onFinish}>Add</button> */}
                     <Form.Item>
                         <Button
+                            disabled={isSave}
                             size="large"
                             type="primary"
                             htmlType="submit"
@@ -267,14 +408,26 @@ function EmployeeCreateOrUpdate() {
 
             <div className={cx("tab-ui")}>
 
-                <Tabs defaultActiveKey="1" type="card"
+                <Tabs
+                    defaultActiveKey="1"
+                    type="card"
+                    onChange={handleTabChange}
                 >
                     <TabPane
                         className={cx("")}
                         key="1"
                         tab={
-                            <Button type="link" className="custom-tab-button nomal-btn">
-                                Employyee Infomation
+                            <Button
+                                type="link"
+                                className={isEmploy ? "custom-tab-button warning-text" : "custom-tab-button nomal-btn"}
+                            >
+                                Employee Infomation
+                                {isEmploy
+                                    ? <FiAlertOctagon
+                                        className={cx("warning-infomation")}
+                                    />
+                                    : <></>
+                                }
                             </Button>
                         }
                     >
@@ -285,8 +438,17 @@ function EmployeeCreateOrUpdate() {
 
                     <TabPane
                         tab={
-                            <Button type="link" className="custom-tab-button nomal-btn">
+                            <Button
+                                type="link"
+                                className={isContact ? "custom-tab-button warning-text" : "custom-tab-button nomal-btn"}
+                            >
                                 Contact Infomation
+                                {isContact
+                                    ? <FiAlertOctagon
+                                        className={cx("warning-infomation")}
+                                    />
+                                    : <></>
+                                }
                             </Button>
                         }
                         key="2"
@@ -338,7 +500,8 @@ function EmployeeCreateOrUpdate() {
                             deleteId={deleteId}
                             setDeleteId={setDeleteId}
                             setFileList={setFileList}
-                            optionGrade= {optionGrade}
+                            optionGrade={optionGrade}
+                            optionBenefit={optionBenefit}
                         />
                     </TabPane>
                 </Tabs>

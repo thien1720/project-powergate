@@ -22,16 +22,14 @@ export type PaginationItemType =
     | 'next'
     | 'previous';
 
-function PaginationPage({ pagiNation , setPage , setLoading }: {pagiNation : any, setPage: any, setLoading: any} ) {
+function PaginationPage({ pagiNation , setPage , setLoading , setPageItem}: {pagiNation : any, setPage: any, setLoading: any , setPageItem: any} ) {
     const dispatch = useDispatch<ThunkDispatch<AppState, null, Action<string>>>();
     const userJSON : string  = localStorage.getItem('auth') || "";
     const idUser = JSON.parse(userJSON);
-    // console.log(pagiNation)
     const { total, to, last_page, from, next_page_url, last_page_url,current_page ,path } = pagiNation
-    // console.log)
     const getItemAriaLabel = useCallback(async (e : any, page : number |string) =>{
-        // console.log(page)
         setLoading(true)
+        setPageItem(page)
         const employee = await dispatch(fetchThunk(`${API_PATHS.employeeDocument}/get-available-for-assign/${idUser.id}?page=${page}`))
         dispatch(addEmployeeDocment(employee.data.data))
         setPage(employee.data)
