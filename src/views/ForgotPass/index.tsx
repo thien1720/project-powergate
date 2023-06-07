@@ -25,7 +25,7 @@ function ForgotPass() {
     const onFinish = (values: any) => {
         async function handleFogotPass() {
             console.log('Received values of form: ', values);
-            const forgotPass = await dispatch(fetchThunk(`${API_PATHS.grade}`, "post" , values));
+            const forgotPass = await dispatch(fetchThunk(`${API_PATHS.grade}/forgot-password`, "post" , values));
             console.log(forgotPass);
             if(forgotPass.result) {
                 toastMessageSuccess(forgotPass.message);
@@ -64,14 +64,13 @@ function ForgotPass() {
                         placeholder="Email" />
                 </Form.Item>
 
-                <Form.Item>
+
                     <Button
                         type="primary"
                         htmlType="submit"
                         className={cx("btn-login")}>
                         Confirm & Send OTP
                     </Button>
-                </Form.Item>
 
                 <Link to="/">Back to Sing In</Link>
             </Form>

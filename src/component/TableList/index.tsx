@@ -25,7 +25,7 @@ const columns: ColumnsType<EmployE> = [
     {
         title: 'Name',
         dataIndex: 'name',
-        width: 100,
+        width: 150,
 
     },
     {
@@ -41,13 +41,13 @@ const columns: ColumnsType<EmployE> = [
     {
         title: 'Bank Card No.',
         dataIndex: 'bank_name',
-        width: 150,
+        width: 200,
 
     },
     {
         title: 'Bank Account No.',
         dataIndex: 'bank_account_no',
-        width: 150,
+        width: 200,
 
     },
     {
@@ -76,13 +76,13 @@ const columns: ColumnsType<EmployE> = [
     {
         title: 'Home Address_1',
         dataIndex: 'home_address_1',
-        width: 150,
+        width: 200,
 
     },
     {
         title: 'Home Address_2',
         dataIndex: 'home_address_2',
-        width: 150,
+        width: 200,
 
     },
     {

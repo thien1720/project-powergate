@@ -195,7 +195,6 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                             value={formUpload.contract_date}
                             onChange={(date: any) => {
                                 setCheckDate(false)
-                                // const newConTractDate = convert(date)
                                 setFormUpload({ ...formUpload, contract_date: date });
                             }}
                             size="large"
@@ -204,7 +203,6 @@ function ContactInfomation({ fileListContact, setFileListContact }: any) {
                     </Form.Item>
 
                     <Form.Item
-
                         className={cx("label-custom")}
                         label={renderCustomLabel(t("Contract Name"))}
                         rules={[{

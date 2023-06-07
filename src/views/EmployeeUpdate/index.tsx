@@ -86,7 +86,6 @@ function EmployeeCreateOrUpdate() {
     const [deleteId, setDeleteId] = useState<[]>([])
     const [fileListContact, setFileListContact] = useState<any>([])
 
-    console.log(detailE)
     // form orther
     const formData = new FormData();
     formData.append('employee_id', String(id));
@@ -200,8 +199,30 @@ function EmployeeCreateOrUpdate() {
 
         handeAddChanges(values)
     };
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+    const onFinishFailed = (error: any) => {
+        
+        console.log('Failed:', error);
+        setIsSave(true)
+
+        const filErrorCon = error.errorFields.some((err: any) => {
+            return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
+        })
+
+        const filErrorEm = error.errorFields.some((err: any) => {
+            return err.name.toString() === "name"
+                || err.name.toString() === "gender"
+                || err.name.toString() === "nc_id"
+                || err.name.toString() === "ktp_no"
+                || err.name.toString() === "nc_id"
+        })
+
+        if(filErrorCon){
+            setIsContact(true)
+
+        }
+        if(filErrorEm){
+            setIsEmploy(true)
+        }
     };
 
     const handleTabChange = (activeKey: string) => {
@@ -341,13 +362,8 @@ function EmployeeCreateOrUpdate() {
             const departMement = await dispatch(fetchThunk(`${API_PATHS.grade}/department`, "get"));
 
             employee.data.dob = dayjs(new Date(employee.data.dob))
-            const dateString = employee.data.contract_start_date;
-            const dateParts = dateString.split("-");
-            const year = parseInt(dateParts[0], 10);
-            const month = parseInt(dateParts[1], 10) - 1; // Trừ 1 vì tháng trong JavaScript bắt đầu từ 0
-            const day = parseInt(dateParts[2], 10);
+            
             employee.data.contract_start_date = dayjs(new Date(employee.data.contract_start_date))
-            // dayjs(new Date(employee.data.contract_start_date))
             employee.data.benefits = employee.data?.benefits.map((item: Benefit) => item.name)
             employee.data.type = Number(employee.data.type)
             console.log(employee.data.contract_start_date)

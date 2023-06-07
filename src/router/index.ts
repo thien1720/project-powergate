@@ -8,17 +8,18 @@ import ForgotPass from "../views/ForgotPass"
 import NotFound from "../views/NotFound"
 
 const RouterPage = [
-    {
-        path: "/",
-        component : Login,
-        layout: null, 
+    // {
+    //     path: "/",
+    //     component : Login,
+    //     layout: null, 
     
-    },
+    // },
     {
         path: "/auth/sign-in",
         component : Login,
         layout: null, 
-    
+        // protext : true
+        
     },
     {
         path: "/forgot",
@@ -33,17 +34,22 @@ const RouterPage = [
     }, 
     {
         path : "/employee/create-or-update",
-        component: EmployeeCreate
+        component: EmployeeCreate,
+        protext : true
+
     },
     {
         path : "/employee/create-or-update/:id",
-        component: EmployeeUpdate
+        component: EmployeeUpdate,
+        protext : true
     },
 
     {   
         path: "*",
         component: NotFound ,
-        layout: null
+        layout: null,
+        protext : true
+
     }
 
 ]

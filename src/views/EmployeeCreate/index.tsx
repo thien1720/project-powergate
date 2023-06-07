@@ -148,8 +148,29 @@ function EmployeeCreate() {
         handeAddChanges(values)
     };
 
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
+    const onFinishFailed = (error: any) => {
+        console.log('Failed:', error);
+        setIsAdd(false)
+
+        const filErrorCon = error.errorFields.some((err: any) => {
+            return err.name.toString() === "contract_start_date" || err.name.toString() === "type"
+        })
+
+        const filErrorEm = error.errorFields.some((err: any) => {
+            return err.name.toString() === "name"
+                || err.name.toString() === "gender"
+                || err.name.toString() === "nc_id"
+                || err.name.toString() === "ktp_no"
+                || err.name.toString() === "nc_id"
+        })
+
+        if(filErrorCon){
+            setIsContact(false)
+
+        }
+        if(filErrorEm){
+            setIsEmploy(false)
+        }
     };
 
     const handleTabChange = (activeKey: string) => {

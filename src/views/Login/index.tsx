@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useSearchParams , useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
@@ -25,9 +25,20 @@ function Login() {
     // const [, forceUpdate] = useState({});
     const [searchParams] = useSearchParams({ 'auth/sign-in': '' });
     const { t } = useTranslation();
-    let navigate = useNavigate()
 
+    const auth = Cookies.get(ACCESS_TOKEN_KEY);
+    const location = useLocation();
+    const navigate = useNavigate();
+    useEffect(() => {
 
+        if (auth) {
+          console.log(location)
+          if(location.pathname == "/auth/sign-in"){
+            console.log("goback")
+            navigate(-1);
+        }
+        }
+      }, [location , auth, navigate]);
 
     const onFinish = (values: any) => {
         async function singIn(values: any) {
@@ -64,7 +75,7 @@ function Login() {
     return (
         <div className={cx("form-login")}>
             <div className={cx("head-form")}>
-                <img src="image/logo-pro.svg" alt="logo" />
+                <img src="../image/logo-pro.svg" alt="logo" />
                 <h1>HR Management System</h1>
                 <h1>Sign In</h1>
             </div>
